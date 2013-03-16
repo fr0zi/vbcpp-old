@@ -1,6 +1,4 @@
-Virtual Bus Core++
-
-===
+# Virtual Bus Core++
 
 Repository has all code and libraries needed to compile executable file. When you clone repository, you can run:
 
