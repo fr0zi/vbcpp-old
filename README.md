@@ -9,20 +9,20 @@ After that you will see file load3ds or load3ds.exe in current directory.
 
 Running is simple:
 
-	vbcpp [3ds_file] [texture_directory]
+     vbcpp [3ds_file] [texture_directory]
 
 So, running:
 
-	vbcpp model.3ds
+     vbcpp model.3ds
 
 or:
 
-	vbcpp model.3ds ./
+     vbcpp model.3ds ./
 
 will couse loading model from file 'model.3ds' from current directory and use needed textures from current directory.
 
 When you type:
 
-	vbcpp model.3ds textures/
+     vbcpp model.3ds textures/
 
 will start application and load model from file 'model.3ds' but textures will be loaded from sub-directory 'textures/'.
