@@ -7,6 +7,8 @@ Repository has all code and libraries needed to compile executable file. When yo
 
 After that you will see file load3ds or load3ds.exe in current directory.
 
+### Running the code
+
 Running is simple:
 
      vbcpp [3ds_file] [texture_directory]
