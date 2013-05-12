@@ -1,0 +1,22 @@
+CC = g++
+INCPATH = 3rdparty/include
+OBJS = main.o shader.o
+LIBS = -L/usr/lib -lXrandr -lGL -lGLU -lrt
+MYLIBS = -L3rdparty/libs/linux -lglfw -lGLEW -lSOIL -l3ds
+LDFLAGS = $(LIBS) $(MYLIBS)
+CFLAGS = -I$(INCPATH)
+
+vbcpp: $(OBJS)
+	$(CC) $(OBJS) $(CFLAGS) -o vbcpp $(LDFLAGS)
+		
+main.o: main.cpp
+	$(CC) $(CFLAGS) -c main.cpp -o main.o $(LDFLAGS)
+	
+shader.o: shader.cpp
+	$(CC) $(CFLAGS) -c shader.cpp -o shader.o $(LDFLAGS)
+	
+clean:
+	rm *.o vbcpp
+	
+.PHONY: clean
+

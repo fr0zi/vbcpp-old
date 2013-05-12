@@ -1,0 +1,10 @@
+# DIRECTORIES
+ld
+Zakaznoy
+zkm
+
+# FILES
+*.o
+*.3ds
+
+

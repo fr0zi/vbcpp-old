@@ -1,0 +1,18 @@
+CC = g++
+INCPATH = 3rdparty/include
+OBJS = main.o
+LIBS = -lopengl32 -lglu32
+MYLIBS = -L"3rdparty/libs" -lglew32.dll -lfreeglut -l3ds -lSOIL
+LDFLAGS = $(MYLIBS) $(LIBS)
+CFLAGS = -I$(INCPATH)
+
+vbcpp.exe: $(OBJS)
+	$(CC) $(OBJS) $(CFLAGS) -o vbcpp.exe $(LDFLAGS)
+		
+main.o: main.cpp
+	$(CC) $(CFLAGS) -c main.cpp -o main.o $(LDFLAGS)
+	
+clean:
+	del *.o *.exe
+	
+.PHONY: clean

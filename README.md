@@ -5,7 +5,7 @@ Repository has all code and libraries needed to compile executable file. When yo
 - make.bat - compiling on Windows using Mingw32 compiler
 - make.sh - compiling on Linux using GNU GCC
 
-After that you will see file load3ds or load3ds.exe in current directory.
+After that you will see file vbcpp or vbcpp.exe in current directory.
 
 ### Running the code
 
