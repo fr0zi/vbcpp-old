@@ -6,5 +6,8 @@ zkm
 # FILES
 *.o
 *.3ds
+*.jpg
 
+# EXECUTABLES
 vbcpp
+*.exe
