@@ -25,7 +25,8 @@ class CRenderer : virtual public CReferenceCounter
         {
             fprintf(stdout, "Destroying Video Server\n");
 			
-			glDeleteVertexArrays(1, &_VertexArrayID);
+			if (_VertexArrayID)
+				glDeleteVertexArrays(1, &_VertexArrayID);
 
 			glfwTerminate();
         }
@@ -54,6 +55,8 @@ class CRenderer : virtual public CReferenceCounter
 
 		glfwSetWindowPos(xPos, yPos);
 
+		glewExperimental = GL_TRUE;
+		
         // Initialize GLEW
         if( glewInit() != GLEW_OK )
         {

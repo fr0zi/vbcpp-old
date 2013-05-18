@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 	glm::mat4 Projection = glm::perspective(45.0f, 800.0f / 600.0f, 0.1f, 1000.0f);
 
 	glm::mat4 View = glm::lookAt(
-						glm::vec3(10,3,-10),
+						glm::vec3(5,3,-9),
 						glm::vec3(0,0,0),
 						glm::vec3(0,1,0) );
 
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
 			{
 				mb = busMesh->getMeshBuffer(mbLoop);
 
-				if(mb->getMaterial().transparency <= 0)
+				if(mb->getMaterial().transparency == 0)
 				{
 					//glColor4f(1.0, 1.0, 1.0, 1.0f);
 
@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
 					glActiveTexture(GL_TEXTURE0);
 					glBindTexture(GL_TEXTURE_2D, mb->getMaterial().textureId);
 					glUniform1i(TextureID, 0);
-					glUniform1f(AlphaValueID, 1.0f);
+					glUniform1f(AlphaValueID, mb->getMaterial().transparency);
 					glUniform1f(ValidTextureID, mb->getMaterial().textureId);
 					
 					
@@ -131,7 +131,7 @@ int main(int argc, char* argv[])
 			{
 				mb = busMesh->getMeshBuffer(mbLoop);
 
-				if(mb->getMaterial().transparency > 0)
+				if(mb->getMaterial().transparency <= 1)
 				{
 					glUseProgram(shaderId);
 

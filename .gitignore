@@ -2,6 +2,7 @@
 ld
 Zakaznoy
 zkm
+tex
 
 # FILES
 *.o
@@ -11,3 +12,4 @@ zkm
 # EXECUTABLES
 vbcpp
 *.exe
+*.zip

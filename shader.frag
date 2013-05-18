@@ -19,5 +19,5 @@ void main(){
 	else
 		color.rgb = vec3(1,1,1);
 
-	color.a = alpha;
+	color.a = 1.0 - alpha;
 }
