@@ -3,7 +3,7 @@
 
 #include "CNode.hpp"
 #include "CBusNode.hpp"
-#include "CRenderer.hpp"
+#include "CVisioner.hpp"
 
 class CNode;
 
@@ -12,7 +12,7 @@ class CSceneManager : public CNode
 	public:
 		CSceneManager(CNode* parent = 0,
 					vbcString name = "SceneManager",
-					CRenderer* renderer = 0)
+					CVisioner* renderer = 0)
 					: CNode(parent, name)
 		{
 
@@ -64,7 +64,7 @@ class CSceneManager : public CNode
 	mat4 Projection;
 	mat4 View;
 
-	CRenderer	_Renderer;
+	//CVisioner*	_Renderer;
 };
 
 #endif // CSCENEMANAGER_HPP_INCLUDED

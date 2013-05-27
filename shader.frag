@@ -9,15 +9,10 @@ out vec4 color;
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
 uniform float alpha;
-uniform float validTexture;
 
-void main(){
 
-	// Output color = color of the texture at the specified UV
-	if(validTexture)
-		color.rgb = texture2D( myTextureSampler, UV ).rgb;
-	else
-		color.rgb = vec3(1,1,1);
-
+void main()
+{
+	color.rgb = texture2D( myTextureSampler, UV ).rgb;
 	color.a = 1.0 - alpha;
 }

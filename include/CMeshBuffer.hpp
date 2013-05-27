@@ -58,21 +58,27 @@ public:
 
 		vbcString texturePath = texPath + _Material.textureName;
 
+		
 		if( _Material.textureName != "" )
 		{	
+			printf("Loading texture: %s\n", texturePath.c_str() );
+		
 			GLuint texId = SOIL_load_OGL_texture(texturePath.c_str(),
 											SOIL_LOAD_AUTO,
 											SOIL_CREATE_NEW_ID,
-											SOIL_FLAG_MIPMAPS | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_INVERT_Y);
+											SOIL_FLAG_MIPMAPS | SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_COMPRESS_TO_DXT);
 
 			if( texId == 0 )
 			{
 				printf( "SOIL error! %s: %s\n", SOIL_last_result(), texturePath.c_str() );
 			}
 
+			printf("Texture ID: %d\n", texId);
+			
 			_Material.textureId = texId;		
-		}	
-
+		}
+		
+		
 		loadGeometry(file, material);
 
 		valid = false;

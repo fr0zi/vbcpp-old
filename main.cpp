@@ -1,5 +1,5 @@
 #include "include/Includes.hpp"
-#include "include/CRenderer.hpp"
+#include "include/CVisioner.hpp"
 #include "include/CBusNode.hpp"
 #include "include/CSceneManager.hpp"
 
@@ -30,8 +30,12 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	CRenderer* renderer = new CRenderer;
-	renderer->createWindow(800, 600, 100, 100);
+	CVisioner* renderer = new CVisioner;
+	
+	if(!renderer->createWindow(800, 600, 100, 100))
+		return -1;
+
+
 	renderer->setWindowTitle("Virtual Bus Core++");
 
 	CSceneManager* smgr = new CSceneManager(0, "SceneManager", renderer);
@@ -40,37 +44,31 @@ int main(int argc, char* argv[])
 	
 	smgr->addBusMeshSceneNode(busMesh, "Bus"); 
 
-	glShadeModel(GL_SMOOTH);
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_CULL_FACE);
-	//glEnable(GL_NORMALIZE);
-
-	glDepthFunc(GL_LEQUAL);
-	glEnable(GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	GLuint shaderId = LoadShaders("shader.vert", "shader.frag");
 
 	glm::mat4 Projection = glm::perspective(45.0f, 800.0f / 600.0f, 0.1f, 1000.0f);
 
 	glm::mat4 View = glm::lookAt(
-						glm::vec3(5,3,-9),
+						glm::vec3(-3,3,-12),
 						glm::vec3(0,0,0),
 						glm::vec3(0,1,0) );
 
-			glm::mat4 position = glm::translate(vec3(0,0,0));
-            glm::mat4 rotation = glm::rotate(-90.0f, vec3(1,0,0));
-            glm::mat4 scale = glm::scale(vec3(1,1,1));
+	glm::mat4 position = glm::translate(vec3(0,0,0));
+	glm::mat4 rotation = glm::rotate(-90.0f, vec3(1,0,0));
+	glm::mat4 scale = glm::scale(vec3(1,1,1));
 
-			glm::mat4 Model = position * rotation * scale;
+	glm::mat4 Model = position * rotation * scale;
 
-	glm::mat4 MVP = Projection * View * Model;
+	//glm::mat4 MVP = Projection * View * Model;
 
-	GLuint MatrixID = glGetUniformLocation(shaderId, "MVP");
+	GLuint ProjectionMatrixID = glGetUniformLocation(shaderId, "ProjectionMatrix");
+	GLuint ModelMatrixID = glGetUniformLocation(shaderId, "ModelMatrix");
+	GLuint ViewMatrixID = glGetUniformLocation(shaderId, "ViewMatrix");
+	
 	GLuint TextureID = glGetUniformLocation(shaderId, "myTextureSampler");
 	GLuint AlphaValueID = glGetUniformLocation(shaderId, "alpha");
-	float ValidTextureID = glGetUniformLocation(shaderId, "validTexture");
+	//bool ValidTextureID = glGetUniformLocation(shaderId, "validTexture");
 	
 
     while( running && glfwGetWindowParam( GLFW_OPENED ) )
@@ -80,8 +78,10 @@ int main(int argc, char* argv[])
 			
 			CMeshBuffer* mb;
 
-			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);			
-
+			glUniformMatrix4fv(ProjectionMatrixID, 1, GL_FALSE, &Projection[0][0]);
+			glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &View[0][0]);
+			glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &Model[0][0]);
+			
 			
 	  		//First we draw all solid objects
 			
@@ -91,15 +91,13 @@ int main(int argc, char* argv[])
 
 				if(mb->getMaterial().transparency == 0)
 				{
-					//glColor4f(1.0, 1.0, 1.0, 1.0f);
-
 					glUseProgram(shaderId);
 					
-					glActiveTexture(GL_TEXTURE0);
+					glActiveTexture(GL_TEXTURE0);		
 					glBindTexture(GL_TEXTURE_2D, mb->getMaterial().textureId);
+					
 					glUniform1i(TextureID, 0);
 					glUniform1f(AlphaValueID, mb->getMaterial().transparency);
-					glUniform1f(ValidTextureID, mb->getMaterial().textureId);
 					
 					
 					glEnableVertexAttribArray(0);
@@ -139,7 +137,6 @@ int main(int argc, char* argv[])
 					glBindTexture(GL_TEXTURE_2D, mb->getMaterial().textureId);
 					glUniform1i(TextureID, 0);
 					glUniform1f(AlphaValueID, mb->getMaterial().transparency);
-					glUniform1f(ValidTextureID, mb->getMaterial().textureId);
 
 					glDisable(GL_LIGHTING);
 					glEnable(GL_BLEND);					
@@ -156,10 +153,10 @@ int main(int argc, char* argv[])
 					glBindBuffer(GL_ARRAY_BUFFER, mb->getTexCoordBufferID() );
 					glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
 				
-					
+				
 					glDrawArrays(GL_TRIANGLES, 0, mb->getQuantumOfVertices() );
-					
 
+					
 					glDisableVertexAttribArray(0);
 					glDisableVertexAttribArray(1);
 					glDisableVertexAttribArray(2);
