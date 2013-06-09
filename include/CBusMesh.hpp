@@ -2,6 +2,7 @@
 #define __CBUSMESH_HPP__
 
 #include <vector>
+#include <cassert>
 
 #include <lib3ds/file.h>
 #include <lib3ds/material.h>
@@ -37,6 +38,8 @@ class CBusMesh : virtual public CReferenceCounter
 
 			Lib3dsMaterial* material;
 
+			assert( file != NULL );
+			
 			for(material = file->materials; material != NULL; material = material->next)
 			{
 				CMeshBuffer* mb = new CMeshBuffer(file, material, texturePath);
@@ -57,28 +60,6 @@ class CBusMesh : virtual public CReferenceCounter
 			}
 
 			_MeshBuffers.clear();
-		}
-
-	
-		bool loadModel(vbcString filename, vbcString texturePath)
-		{
-			Lib3dsFile* file;
-
-			file = lib3ds_file_load(filename.c_str());
-
-			if(file == NULL)
-				return false;
-
-			Lib3dsMaterial* material;
-
-			for(material = file->materials; material != NULL; material = material->next)
-			{
-				CMeshBuffer* mb = new CMeshBuffer(file, material, texturePath);
-
-				_MeshBuffers.push_back(mb);
-			}
-
-			lib3ds_file_free(file);
 		}
 
 

@@ -58,12 +58,13 @@ public:
 
 		vbcString texturePath = texPath + _Material.textureName;
 
+		GLuint texId = 0;
 		
 		if( _Material.textureName != "" )
 		{	
 			printf("Loading texture: %s\n", texturePath.c_str() );
 		
-			GLuint texId = SOIL_load_OGL_texture(texturePath.c_str(),
+			texId = SOIL_load_OGL_texture(texturePath.c_str(),
 											SOIL_LOAD_AUTO,
 											SOIL_CREATE_NEW_ID,
 											SOIL_FLAG_MIPMAPS | SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_COMPRESS_TO_DXT);

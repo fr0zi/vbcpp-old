@@ -1,27 +1,131 @@
 #include "include/Includes.hpp"
-#include "include/CVisioner.hpp"
-#include "include/CBusNode.hpp"
-#include "include/CSceneManager.hpp"
+#include "include/CDirector.hpp"
 
-#include "include/shader.hpp"
+#include <glew/glew.h>
+#include <glfw/glfw.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-bool running = true;
+#include "include/shader.hpp"
+
+CBusNode* busNode;
+
+enum _EGameState {
+	EGS_RUN,
+	EGS_PAUSE,
+	EGS_QUIT
+} EGameState;
 
 
 void readInput()
 {
 	// Check if the ESC key was pressed or the window was closed
 	if( glfwGetKey( GLFW_KEY_ESC ) == GLFW_PRESS )
-			running = false;
+			EGameState = EGS_QUIT;
+			
+	if( glfwGetKey( GLFW_KEY_LEFT ) == GLFW_PRESS )
+	{
+		float zRot = busNode->getZRotation();
+		
+		zRot += 0.05f;
+		
+		if( zRot > 360.0f )
+			zRot = 0.0f;
+		
+		busNode->setZRotation( zRot );
+	}
+	
+	if( glfwGetKey( GLFW_KEY_RIGHT ) == GLFW_PRESS )
+	{
+		float zRot = busNode->getZRotation();	
+	
+		zRot -= 0.05f;
+		
+		if( zRot < 0.0f )
+			zRot = 360.f;
+		
+		busNode->setZRotation( zRot );
+	}
 
+	if( glfwGetKey( GLFW_KEY_UP ) == GLFW_PRESS )
+	{
+		float xRot = busNode->getXRotation();	
+	
+		xRot += 0.05f;
+		busNode->setXRotation( xRot );
+	}
+	
+	if( glfwGetKey( GLFW_KEY_DOWN ) == GLFW_PRESS )
+	{
+		float xRot = busNode->getXRotation();
+	
+		xRot -= 0.05f;
+		busNode->setXRotation( xRot );
+	}	
 }
 
 
+//! Create a window
+int createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yPos = 0)
+{
+    if ( !glfwInit() )
+    {
+        fprintf( stderr, "VIDEO: Failed to initialize GLFW!\n");
+        return 0;
+    }
+		
+    glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4); //4x antialiasing
+    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
+    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
+    glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		
+	glfwOpenWindowHint( GLFW_WINDOW_NO_RESIZE, GL_TRUE );
 
+    // Open window and create its OpenGL context
+    if( !glfwOpenWindow( width, height, 0, 0, 0, 0, 32, 0, GLFW_WINDOW ))
+    {
+        fprintf( stderr, "VIDEO: Failed to open GLFW window!\n");
+        glfwTerminate();
+        return 0;
+    }
+
+	glfwSetWindowPos(xPos, yPos);
+
+	glewExperimental = GL_TRUE;
+		
+    // Initialize GLEW
+    if( glewInit() != GLEW_OK )
+    {
+        fprintf( stderr, "VIDEO: Failed to initialize GLEW!\n");
+        return 0;
+    }
+
+	if (GLEW_VERSION_3_3)
+	{
+		fprintf( stderr, "VIDEO: OpenGL 3.3 Core is suported. GOOD!\n");
+	}
+	else
+	{
+		fprintf( stderr, "VIDEO: OpenGL 3.3 Core is not suported! NOT GOOD!\n");
+		return 0;
+	}
+		
+	glShadeModel(GL_SMOOTH);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_CULL_FACE);
+
+
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+	return 1;
+}
+
+	
 int main(int argc, char* argv[])
 {
 	if(argc < 3)
@@ -30,151 +134,39 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	CVisioner* renderer = new CVisioner;
-	
-	if(!renderer->createWindow(800, 600, 100, 100))
+	// Creating OpenGL window
+	if(!createWindow(800, 600, 100, 100))
 		return -1;
 
+	glfwSetWindowTitle("Virtual Bus Core++");
 
-	renderer->setWindowTitle("Virtual Bus Core++");
+	// Creating our Scene Manager
+	CDirector* smgr = new CDirector(0, "SceneManager");
 
-	CSceneManager* smgr = new CSceneManager(0, "SceneManager", renderer);
-
+	// Loading mesh from 3ds file, adding Bus Node to Scene Manager and setting mesh for it
 	CBusMesh* busMesh = new CBusMesh(argv[1], argv[2]);
+	busNode = smgr->addBusMeshSceneNode(busMesh, "Bus"); 
+	busNode->setXRotation(-90.0f);
 	
-	smgr->addBusMeshSceneNode(busMesh, "Bus"); 
+	// Setting game state to RUN
+	EGameState = EGS_RUN;
 
-
-	GLuint shaderId = LoadShaders("shader.vert", "shader.frag");
-
-	glm::mat4 Projection = glm::perspective(45.0f, 800.0f / 600.0f, 0.1f, 1000.0f);
-
-	glm::mat4 View = glm::lookAt(
-						glm::vec3(-3,3,-12),
-						glm::vec3(0,0,0),
-						glm::vec3(0,1,0) );
-
-	glm::mat4 position = glm::translate(vec3(0,0,0));
-	glm::mat4 rotation = glm::rotate(-90.0f, vec3(1,0,0));
-	glm::mat4 scale = glm::scale(vec3(1,1,1));
-
-	glm::mat4 Model = position * rotation * scale;
-
-	//glm::mat4 MVP = Projection * View * Model;
-
-	GLuint ProjectionMatrixID = glGetUniformLocation(shaderId, "ProjectionMatrix");
-	GLuint ModelMatrixID = glGetUniformLocation(shaderId, "ModelMatrix");
-	GLuint ViewMatrixID = glGetUniformLocation(shaderId, "ViewMatrix");
-	
-	GLuint TextureID = glGetUniformLocation(shaderId, "myTextureSampler");
-	GLuint AlphaValueID = glGetUniformLocation(shaderId, "alpha");
-	//bool ValidTextureID = glGetUniformLocation(shaderId, "validTexture");
-	
-
-    while( running && glfwGetWindowParam( GLFW_OPENED ) )
-    {
-		renderer->startRender(0.7, 0.7, 0.9, 1.0);
-
-			
-			CMeshBuffer* mb;
-
-			glUniformMatrix4fv(ProjectionMatrixID, 1, GL_FALSE, &Projection[0][0]);
-			glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &View[0][0]);
-			glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &Model[0][0]);
-			
-			
-	  		//First we draw all solid objects
-			
-			for(unsigned int mbLoop = 0; mbLoop < busMesh->getQuantumOfMeshBuffers(); mbLoop++)
-			{
-				mb = busMesh->getMeshBuffer(mbLoop);
-
-				if(mb->getMaterial().transparency == 0)
-				{
-					glUseProgram(shaderId);
+	// Main loop
+    while( EGameState == EGS_RUN && glfwGetWindowParam( GLFW_OPENED ) )
+    {		
+		glClearColor(0.7, 0.7, 0.9, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 					
-					glActiveTexture(GL_TEXTURE0);		
-					glBindTexture(GL_TEXTURE_2D, mb->getMaterial().textureId);
-					
-					glUniform1i(TextureID, 0);
-					glUniform1f(AlphaValueID, mb->getMaterial().transparency);
-					
-					
-					glEnableVertexAttribArray(0);
-					glBindBuffer(GL_ARRAY_BUFFER, mb->getVertexBufferID() );
-					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0 );
-					
-					glEnableVertexAttribArray(1);
-					glBindBuffer(GL_ARRAY_BUFFER, mb->getNormalBufferID() );
-					glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0, (void*)0 );
+			smgr->renderAll();	
 
-					glEnableVertexAttribArray(2);
-					glBindBuffer(GL_ARRAY_BUFFER, mb->getTexCoordBufferID() );
-					glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
-				
-					
-					glDrawArrays(GL_TRIANGLES, 0, mb->getQuantumOfVertices() );
-					
-
-					glDisableVertexAttribArray(0);
-					glDisableVertexAttribArray(1);
-					glDisableVertexAttribArray(2);
-				}
-			}
-
-			
-	  			//Secondly - we draw all transparent objects.
-	  			//Transparency ratio is set from material variable 'transparency'
-			for(unsigned int mbLoop = 0; mbLoop < busMesh->getQuantumOfMeshBuffers(); mbLoop++)
-			{
-				mb = busMesh->getMeshBuffer(mbLoop);
-
-				if(mb->getMaterial().transparency <= 1)
-				{
-					glUseProgram(shaderId);
-
-					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, mb->getMaterial().textureId);
-					glUniform1i(TextureID, 0);
-					glUniform1f(AlphaValueID, mb->getMaterial().transparency);
-
-					glDisable(GL_LIGHTING);
-					glEnable(GL_BLEND);					
-					
-					glEnableVertexAttribArray(0);
-					glBindBuffer(GL_ARRAY_BUFFER, mb->getVertexBufferID() );
-					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0 );
-					
-					glEnableVertexAttribArray(1);
-					glBindBuffer(GL_ARRAY_BUFFER, mb->getNormalBufferID() );
-					glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0, (void*)0 );
-
-					glEnableVertexAttribArray(2);
-					glBindBuffer(GL_ARRAY_BUFFER, mb->getTexCoordBufferID() );
-					glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
-				
-				
-					glDrawArrays(GL_TRIANGLES, 0, mb->getQuantumOfVertices() );
-
-					
-					glDisableVertexAttribArray(0);
-					glDisableVertexAttribArray(1);
-					glDisableVertexAttribArray(2);
-
-					glDisable(GL_BLEND);					
-					glEnable(GL_LIGHTING);
-				}
-			}
-			//*/
-
-		renderer->finishRender();
+		glfwSwapBuffers();
 
 		readInput();
 	}
-
+	
+	// Dropping Scene Manager
 	smgr->drop();
-	renderer->drop();
-
+	
 	return 0;
 }
 
