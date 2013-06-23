@@ -1,5 +1,5 @@
-#ifndef __CDIRECTOR_HPP_INCLUDED__
-#define __CDIRECTOR_HPP_INCLUDED__
+#ifndef __CSCENEMANAGER_HPP_INCLUDED__
+#define __CSCENEMANAGER_HPP_INCLUDED__
 
 #include "CEntity.hpp"
 #include "CBusNode.hpp"
@@ -94,10 +94,10 @@ typedef struct CameraStruct
 } SCamera;
 
 
-class CDirector : public CEntity
+class CSceneManager : public CEntity
 {
 	public:
-		CDirector(CEntity* parent = 0,
+		CSceneManager(CEntity* parent = 0,
 					vbcString name = "SceneManager")
 					: CEntity(parent, name)
 		{
@@ -111,7 +111,7 @@ class CDirector : public CEntity
 		}
 
 		
-		virtual ~CDirector()
+		virtual ~CSceneManager()
 		{
             printf("Destroying Scene Manager\n");
 
@@ -166,8 +166,6 @@ class CDirector : public CEntity
 					GLuint ProjectionMatrixID = glGetUniformLocation(shaderId, "ProjectionMatrix");
 					GLuint ModelMatrixID = glGetUniformLocation(shaderId, "ModelMatrix");
 					GLuint ViewMatrixID = glGetUniformLocation(shaderId, "ViewMatrix");
-	
-					//glm::mat4 model = (*it)->getAbsoluteTransformation();
 
 					glUseProgram(shaderId);
 				
@@ -184,4 +182,4 @@ class CDirector : public CEntity
 		SCamera*	m_Camera;
 };
 
-#endif // __CDIRECTOR_HPP_INCLUDED__
+#endif // __CSCENEMANAGER_HPP_INCLUDED__

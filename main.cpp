@@ -1,12 +1,17 @@
-#include "include/Includes.hpp"
-#include "include/CDirector.hpp"
-
 #include <glew/glew.h>
 #include <glfw/glfw.h>
+
+#include <string>
+#include <sstream>
+#include <iostream>
+
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
+
+#include "include/Includes.hpp"
+#include "include/CSceneManager.hpp"
 
 #include "include/shader.hpp"
 
@@ -17,6 +22,80 @@ enum _EGameState {
 	EGS_PAUSE,
 	EGS_QUIT
 } EGameState;
+
+std::string windowTitle = "Virtual Bus Core++ FPS: ";
+
+
+int calcFPS(double theTimeInterval = 1.0, std::string theWindowTitle = "NONE") 
+{ 
+	// Static values which only get initialised the first time the function runs 
+	static double t0Value = glfwGetTime(); 
+	// Set the initial time to now 
+	static int fpsFrameCount = 0; 
+	// Set the initial FPS frame count to 0 
+	static int oldfps = 0; 
+	// Set the initial FPS value to 0.0   
+	
+	int newfps = 0;
+	
+	// Get the current time in seconds since the program started (non-static, so executed every time) 
+	double currentTime = glfwGetTime();   
+	
+	// Ensure the time interval between FPS checks is sane (low cap = 0.1s, high-cap = 10.0s) 
+	// Negative numbers are invalid, 10 fps checks per second at most, 1 every 10 secs at least. 
+	if (theTimeInterval < 0.1) 
+	{ 
+		theTimeInterval = 0.1; 
+	} 
+	if (theTimeInterval > 10.0) 
+	{ 
+		theTimeInterval = 10.0; 
+	}   
+	
+	// Calculate and display the FPS every specified time interval 
+	
+	if ((currentTime - t0Value) > theTimeInterval) 
+	{ 
+		// Calculate the FPS as the number of frames divided by the interval in seconds 
+		newfps = (double)fpsFrameCount / (currentTime - t0Value);   
+		
+		if( newfps != oldfps )
+		{
+		
+			// If the user specified a window title to append the FPS value to... 
+			if (theWindowTitle != "NONE") 
+			{ 
+				// Convert the fps value into a string using an output stringstream 
+				std::ostringstream stream; 
+				stream << newfps; 
+				std::string fpsString = stream.str();   
+			
+				// Append the FPS value to the window title details 
+				theWindowTitle += " | FPS: " + fpsString;   
+				// Convert the new window title to a c_str and set it 
+				const char* pszConstString = theWindowTitle.c_str(); 
+				glfwSetWindowTitle(pszConstString); 
+			} 
+			else // If the user didn't specify a window to append the FPS to then output the FPS to the console 
+			{ 
+				std::cout << "FPS: " << newfps << std::endl; 
+			}
+		}
+		
+		oldfps = newfps;
+		
+		// Reset the FPS frame counter and set the initial time to be now 
+		
+		fpsFrameCount = 0; 
+		t0Value = glfwGetTime(); 
+	} 
+	else // FPS calculation time interval hasn't elapsed yet? Simply increment the FPS frame counter 
+	{ 
+		fpsFrameCount++; 
+	}   // Return the current FPS - doesn't have to be used if you don't want it! 
+		
+	return oldfps; 
+}
 
 
 void readInput()
@@ -141,7 +220,7 @@ int main(int argc, char* argv[])
 	glfwSetWindowTitle("Virtual Bus Core++");
 
 	// Creating our Scene Manager
-	CDirector* smgr = new CDirector(0, "SceneManager");
+	CSceneManager* smgr = new CSceneManager(0, "SceneManager");
 
 	// Loading mesh from 3ds file, adding Bus Node to Scene Manager and setting mesh for it
 	CBusMesh* busMesh = new CBusMesh(argv[1], argv[2]);
@@ -160,8 +239,10 @@ int main(int argc, char* argv[])
 			smgr->renderAll();	
 
 		glfwSwapBuffers();
-
+		
 		readInput();
+		
+		calcFPS(1.0f, windowTitle);
 	}
 	
 	// Dropping Scene Manager
