@@ -1,24 +1,32 @@
 CC = g++
-INCPATH = 3rdparty/include
-OBJS = main.o shader.o bmpread.o
+INCPATH = include
+SRC = main.cpp shader.cpp bmpread.cpp
+OBJS = $(patsubst %.cpp, %.o, ${SRC})
 LIBS = -lopengl32 -lglu32
-MYLIBS = -L"3rdparty/libs" -lglew32.dll -lfreeglut -l3ds -lSOIL
+MYLIBS = -L"libs" -lglew32.dll -lfreeglut -l3ds -lSOIL
 LDFLAGS = $(MYLIBS) $(LIBS)
 CFLAGS = -I$(INCPATH)
 
-vbcpp.exe: $(OBJS)
-	$(CC) $(OBJS) $(CFLAGS) -o vbcpp.exe $(LDFLAGS)
+SRCDIR = src
+OBJDIR = temp
+BINDIR = game
+
+OBJPATH = $(addprefix ${OBJDIR}, ${OBJS})
+
+
+${BINDIR}/vbcpp.exe: ${OBJPATH}
+	$(CC) ${OBJPATH} $(CFLAGS) -o ${BINDIR}/vbcpp.exe $(LDFLAGS)
 		
-main.o: main.cpp
-	$(CC) $(CFLAGS) -c main.cpp -o main.o $(LDFLAGS)
+${OBJDIR}/main.o: ${SRCDIR}/main.cpp
+	$(CC) $(CFLAGS) -c ${SRCDIR}/main.cpp -o ${OBJDIR}/main.o $(LDFLAGS)
 
-shader.o: shader.cpp
-	$(CC) $(CFLAGS) -c shader.cpp -o shader.o $(LDFLAGS)
+${OBJDIR}/shader.o: ${SRCDIR}/shader.cpp
+	$(CC) $(CFLAGS) -c ${SRCDIR}/shader.cpp -o ${OBJDIR}/shader.o $(LDFLAGS)
 
-bmpread.o: bmpread.c
-	$(CC) $(CFLAGS) -c bmpread.c -o bmpread.o $(LDFLAGS)
+${OBJDIR}/bmpread.o: ${SRCDIR}/bmpread.cpp
+	$(CC) $(CFLAGS) -c ${SRCDIR}/bmpread.cpp -o ${OBJDIR}/bmpread.o $(LDFLAGS)
 
 clean:
-	del *.o *.exe
+	del ${OBJDIR}/*.o ${BINDIR}/*.exe
 	
 .PHONY: clean
