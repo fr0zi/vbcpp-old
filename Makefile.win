@@ -1,20 +1,23 @@
 CC = g++
 INCPATH = 3rdparty/include
-OBJS = main.o shader.o
+OBJS = main.o shader.o bmpread.o
 LIBS = -lopengl32 -lglu32
-MYLIBS = -L"3rdparty/libs" -lglfw -lglew32.dll -l3ds -lSOIL
+MYLIBS = -L"3rdparty/libs" -lglew32.dll -lfreeglut -l3ds -lSOIL
 LDFLAGS = $(MYLIBS) $(LIBS)
 CFLAGS = -I$(INCPATH)
 
 vbcpp.exe: $(OBJS)
 	$(CC) $(OBJS) $(CFLAGS) -o vbcpp.exe $(LDFLAGS)
-	
+		
 main.o: main.cpp
 	$(CC) $(CFLAGS) -c main.cpp -o main.o $(LDFLAGS)
 
 shader.o: shader.cpp
 	$(CC) $(CFLAGS) -c shader.cpp -o shader.o $(LDFLAGS)
-	
+
+bmpread.o: bmpread.c
+	$(CC) $(CFLAGS) -c bmpread.c -o bmpread.o $(LDFLAGS)
+
 clean:
 	del *.o *.exe
 	
