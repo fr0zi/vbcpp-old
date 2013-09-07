@@ -3,7 +3,7 @@ INCPATH = include
 SRC =  main.cpp CBusMesh.cpp CMeshBuffer.cpp CBusNode.cpp CNode.cpp shader.cpp bmpread.cpp
 OBJS = $(patsubst %.cpp, %.o, ${SRC})
 LIBS = -lopengl32 -lglu32
-MYLIBS = -L"libs" -lglew32.dll -lfreeglut -l3ds -lSOIL
+MYLIBS = -L"libs/win" -lglew32.dll -lfreeglut -l3ds -lSOIL
 LDFLAGS = $(MYLIBS) $(LIBS)
 CFLAGS = -I$(INCPATH)
 
@@ -11,7 +11,7 @@ SRCDIR = src
 OBJDIR = temp
 BINDIR = game
 
-OBJPATH = $(addprefix ${OBJDIR}, ${OBJS})
+OBJPATH = $(addprefix ${OBJDIR}/, ${OBJS})
 
 
 ${BINDIR}/vbcpp.exe: ${OBJPATH}
