@@ -23,263 +23,82 @@ class CNode : virtual public CReferenceCounter
 {
 public:
 
-        //! CONSTRUCTOR
+	//! CONSTRUCTOR
 	CNode(CNode* parent = 0, vbcString name = "",
-		vec3 position = vec3(0,0,0),
-		float xRotation = 0.0f,
-		float yRotation = 0.0f,
-		float zRotation = 0.0f,
-                vec3 scale = vec3(1,1,1))
-            : m_Parent(parent), m_Name(name),
-                RelativePosition(position),
-                m_XRotationAngle(xRotation),
-		m_YRotationAngle(yRotation),
-		m_ZRotationAngle(zRotation),
-                RelativeScale(scale),
-                m_IsVisible(true)
-	{
-
-		/* This line was couse of error - Segmentation Fault
-			when it was inside 'if( parent != 0 )'
-			When I moved it here - everything start working well :)
-		*/
-		m_Parent = parent;
-
-		if( parent )
-		{
-			parent->addChild(this);
-		}
-
-            	updateAbsoluteTransformation();
-
-		#ifdef DEBUG_MODE
-			std::cout << "\t -- Creating object " << m_Name << std::endl;
-		#endif
-	}
-
+			vec3 position = vec3(0,0,0),
+			float xRotation = 0.0f,
+			float yRotation = 0.0f,
+			float zRotation = 0.0f,
+			vec3 scale = vec3(1,1,1)
+		);
 
         //! DESTRUCTOR
-	virtual ~CNode()
-	{
-		#ifdef DEBUG_MODE
-			std::cout << "\t -- Deleting object " << m_Name << " with all its children.\n";
-		#endif
-
-            	if( m_ShaderProgramID > 0 )
-                	glDeleteProgram(m_ShaderProgramID);
-
-		// Delete all children
-		removeAll();
-	}
-
+	virtual ~CNode();
 
         //! Add child Entity
-        virtual void addChild(CNode* child)
-        {
-		if( child && (child != this) )
-		{
-			child->grab();
-			child->remove();    // remove from old parent
-			m_Children.push_back(child);
-			child->m_Parent = this;
-		}
-        }
-
+        virtual void addChild(CNode* child);
 
         //! Setting entity's name
-        virtual void setName(const vbcString name)
-        {
-        	m_Name = name;
-	}
-
+        virtual void setName(const vbcString name);
 
         //! Getting entity's name
-        virtual vbcString getName() const
-        {
-        	return m_Name;
-	}
+        virtual vbcString getName() const;
 
 
 	//! Get Transform Matrix
-        virtual mat4 getAbsoluteTransformation()
-        {
-            return m_AbsoluteTransformation;
-        }
+        virtual mat4 getAbsoluteTransformation();
 
 
 	//! Remove Entity from the scene
-        virtual void remove()
-        {
-		// If Entity have parent - we remove it from its parent children list
-		if( m_Parent )
-		m_Parent->removeChild(this);
-        }
-
+        virtual void remove();
 
         //! Remove entity from children list
-        virtual bool removeChild(CNode* child)
-        {
-		std::list<CNode *>::iterator it = m_Children.begin();
-
-		for(; it != m_Children.end(); ++it )
-			if( (*it) == child )
-			{
-				(*it)->m_Parent = 0;
-				(*it)->drop();
-				m_Children.erase(it);
-
-				return true;
-			}
-
-			return false;
-        }
-
+        virtual bool removeChild(CNode* child);
 
         //! Remove all children
-        virtual void removeAll()
-        {
-		std::list<CNode *>::iterator it = m_Children.begin();
-
-		for( ; it != m_Children.end(); ++it )
-		{
-			(*it)->m_Parent = 0;
-			(*it)->drop();
-		}
-
-		m_Children.clear();
-        }
-
+        virtual void removeAll();
 
         //! Set parent Entity
-        virtual void setParent(CNode* parent)
-        {
-		grab();
-		remove();
-
-		m_Parent = parent;
-
-		if( m_Parent )
-			m_Parent->addChild(this);
-
-		drop();
-        }
-
+        virtual void setParent(CNode* parent);
 
 	//! Set position
-        virtual void setPosition(vec3 position)
-        {
-		RelativePosition = position;
-
-		updateAbsoluteTransformation();
-        }
-
+        virtual void setPosition(vec3 position);
 
 	//! Set rotation
-        virtual void setXRotation(GLfloat angle)
-        {
-		RelativeRotation = vec3(1,0,0);
-		m_XRotationAngle = angle;
-
-		updateAbsoluteTransformation();
-        }
-
+        virtual void setXRotation(GLfloat angle);
 		
 	//! Set rotation
-        virtual void setYRotation(GLfloat angle)
-        {
-		RelativeRotation = vec3(0,1,0);
-		m_YRotationAngle = angle;
-
-		updateAbsoluteTransformation();
-        }		
-		
+        virtual void setYRotation(GLfloat angle);		
 		
 		//! Set rotation
-        virtual void setZRotation(GLfloat angle)
-        {
-		RelativeRotation = vec3(0,0,1);
-		m_ZRotationAngle = angle;
-
-		updateAbsoluteTransformation();
-        }		
+        virtual void setZRotation(GLfloat angle);		
 		
+	float getXRotation();		
 		
-	float getXRotation()
-	{
-		return m_XRotationAngle;
-	}
+	float getYRotation();		
 		
-		
-	float getYRotation()
-	{
-		return m_YRotationAngle;
-	}		
-		
-		
-	float getZRotation()
-	{
-		return m_ZRotationAngle;
-	}		
-		
+	float getZRotation();		
 		
 	//! Set scale
-        virtual void setScale(vec3 scale)
-        {
-		RelativeScale = scale;
-
-		updateAbsoluteTransformation();
-        }
-
+        virtual void setScale(vec3 scale);
 		
 	//! Set absolute transformation
-        virtual void updateAbsoluteTransformation()
-        {
-		mat4 position = glm::translate(RelativePosition);
-		mat4 rotation = glm::rotate(m_XRotationAngle, vec3(1,0,0));
-		rotation *= glm::rotate(m_YRotationAngle, vec3(0,1,0));
-		rotation *= glm::rotate(m_ZRotationAngle, vec3(0,0,1));
-		mat4 scale = glm::scale(RelativeScale);
-
-		m_AbsoluteTransformation = position * rotation * scale;
-
-		// if Entity has parent - multiply matrices to get actual Entity transformation relative to parent
-		if (m_Parent)
-			m_AbsoluteTransformation = m_Parent->getAbsoluteTransformation() * m_AbsoluteTransformation;
-	}
-
+        virtual void updateAbsoluteTransformation();
 
 	//! Get visibility flag
-	const virtual bool getVisibility() const
-	{
-		return m_IsVisible;
-	}
-
+	const virtual bool getVisibility() const;
 
 	//! Set visibility of Entity
-	virtual void setVisibility(bool visibility)
-	{
-		m_IsVisible = visibility;
-
-		std::list<CNode *>::iterator it = m_Children.begin();
-
-		for( ; it != m_Children.end(); ++it )
-			(*it)->setVisibility(visibility);
-	}
+	virtual void setVisibility(bool visibility);
 		
 	//! Render Entity
 	virtual void render() = 0;
 
 		//! Return shader id
-        virtual GLuint getShaderProgramID()
-        {
-		return m_ShaderProgramID;
-        }
+        virtual GLuint getShaderProgramID();
 
 		//! Set shader id for Entity
-        virtual void setShaderProgramID(GLuint programId)
-        {
-		m_ShaderProgramID = programId;
-        }
+        virtual void setShaderProgramID(GLuint programId);
 
 
     protected:

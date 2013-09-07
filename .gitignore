@@ -1,15 +1,10 @@
 # DIRECTORIES
-ld
-Zakaznoy
-zkm
-tex
 
 # FILES
-*.o
-*.3ds
-*.jpg
+game/buses/*
+game/scenery/*
 
 # EXECUTABLES
-vbcpp
-*.exe
+game/vbcpp
+game/*.exe
 *.zip

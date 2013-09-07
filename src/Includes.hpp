@@ -1,6 +1,9 @@
 #ifndef __INCLUDES_HPP__
 #define __INCLUDES_HPP__
 
+#include <glew/glew.h>
+#include <glfw/glfw.h>
+
 #include <glm/glm.hpp>
 
 typedef glm::vec2 vec2;

@@ -25,58 +25,19 @@ class CBusMesh : virtual public CReferenceCounter
 {
 	public:
 
-		CBusMesh()
-		{
-	
-		}
+		CBusMesh();
 
-		CBusMesh(vbcString filename, vbcString texturePath)
-		{
-			Lib3dsFile* file;
+		CBusMesh(vbcString filename, vbcString texturePath);
 
-			file = lib3ds_file_load(filename.c_str());
+		virtual ~CBusMesh();
 
-			Lib3dsMaterial* material;
-
-			assert( file != NULL );
-			
-			for(material = file->materials; material != NULL; material = material->next)
-			{
-				CMeshBuffer* mb = new CMeshBuffer(file, material, texturePath);
-
-				_MeshBuffers.push_back(mb);
-			}
-
-			lib3ds_file_free(file);
-
-		}
-
-		virtual ~CBusMesh()
-		{
-			for(unsigned int i = 0; i < _MeshBuffers.size(); i++)
-			{
-				if(_MeshBuffers[i])
-				delete _MeshBuffers[i];
-			}
-
-			_MeshBuffers.clear();
-		}
-
-
-		CMeshBuffer* getMeshBuffer(unsigned int i)
-		{
-			return _MeshBuffers[i];
-		}
-
+		CMeshBuffer* getMeshBuffer(unsigned int i);
   
-		unsigned int getQuantumOfMeshBuffers()
-		{
-			return _MeshBuffers.size();
-		}
+		unsigned int getQuantumOfMeshBuffers();
 
 
 	private:
-		MeshBufferList _MeshBuffers;
+		MeshBufferList m_MeshBuffers;
 };
 
 #endif // __CBUSMESH_HPP__

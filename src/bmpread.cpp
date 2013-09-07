@@ -26,7 +26,7 @@
  */
 
 
-#include "bmpread.h"
+#include "bmpread.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>

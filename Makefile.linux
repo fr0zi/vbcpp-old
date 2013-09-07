@@ -1,6 +1,6 @@
 CC = g++
 INCPATH = include
-SRC = main.cpp shader.cpp bmpread.cpp
+SRC = main.cpp CBusMesh.cpp CMeshBuffer.cpp CBusNode.cpp CNode.cpp shader.cpp bmpread.cpp
 OBJS = $(patsubst %.cpp, %.o, ${SRC})
 LIBS = -L/usr/lib -lXrandr -lGL -lGLU -lrt
 MYLIBS = -Llibs/linux -lglfw -lGLEW -lSOIL -l3ds
@@ -11,19 +11,31 @@ SRCDIR = src
 OBJDIR = temp
 BINDIR = game
 
-
 OBJPATH = $(addprefix ${OBJDIR}/, ${OBJS})
+
 
 ${BINDIR}/vbcpp: ${OBJPATH}
 	$(CC) ${OBJPATH} $(CFLAGS) -o ${BINDIR}/vbcpp $(LDFLAGS)
 		
 ${OBJDIR}/main.o: ${SRCDIR}/main.cpp
-	$(CC) $(CFLAGS) -c src/main.cpp -o temp/main.o $(LDFLAGS)
+	$(CC) $(CFLAGS) -c ${SRCDIR}/main.cpp -o ${OBJDIR}/main.o $(LDFLAGS)
+
+${OBJDIR}/CMeshBuffer.o: ${SRCDIR}/CMeshBuffer.cpp
+	$(CC) $(CFLAGS) -c ${SRCDIR}/CMeshBuffer.cpp -o ${OBJDIR}/CMeshBuffer.o $(LDFLAGS)
 	
-${OBJDIR}/shader.o: ${SRCDIR}/shader.cpp
+${OBJDIR}/CBusNode.o: ${SRCDIR}/CBusNode.cpp
+	$(CC) $(CFLAGS) -c ${SRCDIR}/CBusNode.cpp -o ${OBJDIR}/CBusNode.o $(LDFLAGS)
+
+${OBJDIR}/CBusMesh.o: ${SRCDIR}/CBusMesh.cpp
+	$(CC) $(CFLAGS) -c ${SRCDIR}/CBusMesh.cpp -o ${OBJDIR}/CBusMesh.o $(LDFLAGS)
+
+${OBJDIR}/CNode.o: ${SRCDIR}/CNode.cpp
+	$(CC) $(CFLAGS) -c ${SRCDIR}/CNode.cpp -o ${OBJDIR}/CNode.o $(LDFLAGS)
+
+${OBJDIR}/shader.o: ${SRCDIR}/shader.hpp
 	$(CC) $(CFLAGS) -c ${SRCDIR}/shader.cpp -o ${OBJDIR}/shader.o $(LDFLAGS)
 	
-${OBJDIR}/bmpread.o: ${SRCDIR}/bmpread.cpp
+${OBJDIR}/bmpread.o: ${SRCDIR}/bmpread.hpp
 	$(CC) $(CFLAGS) -c ${SRCDIR}/bmpread.cpp -o ${OBJDIR}/bmpread.o $(LDFLAGS)
 
 
@@ -31,4 +43,3 @@ clean:
 	rm ${OBJDIR}/*.o ${BINDIR}/vbcpp
 	
 .PHONY: clean
-
