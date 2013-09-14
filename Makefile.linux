@@ -8,38 +8,28 @@ LDFLAGS = $(LIBS) $(MYLIBS)
 CFLAGS = -I$(INCPATH)
 
 SRCDIR = src
-OBJDIR = temp
+OBJDIR = tmp
 BINDIR = game
 
 OBJPATH = $(addprefix ${OBJDIR}/, ${OBJS})
+
+all: dirs $(BINDIR)/vbcpp
+
+dirs:
+	mkdir -p $(BINDIR)
+	mkdir -p $(OBJDIR)
 
 
 ${BINDIR}/vbcpp: ${OBJPATH}
 	$(CC) ${OBJPATH} $(CFLAGS) -o ${BINDIR}/vbcpp $(LDFLAGS)
 		
-${OBJDIR}/main.o: ${SRCDIR}/main.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/main.cpp -o ${OBJDIR}/main.o $(LDFLAGS)
 
-${OBJDIR}/CMeshBuffer.o: ${SRCDIR}/CMeshBuffer.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/CMeshBuffer.cpp -o ${OBJDIR}/CMeshBuffer.o $(LDFLAGS)
-	
-${OBJDIR}/CBusNode.o: ${SRCDIR}/CBusNode.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/CBusNode.cpp -o ${OBJDIR}/CBusNode.o $(LDFLAGS)
-
-${OBJDIR}/CBusMesh.o: ${SRCDIR}/CBusMesh.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/CBusMesh.cpp -o ${OBJDIR}/CBusMesh.o $(LDFLAGS)
-
-${OBJDIR}/CNode.o: ${SRCDIR}/CNode.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/CNode.cpp -o ${OBJDIR}/CNode.o $(LDFLAGS)
-
-${OBJDIR}/shader.o: ${SRCDIR}/shader.hpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/shader.cpp -o ${OBJDIR}/shader.o $(LDFLAGS)
-	
-${OBJDIR}/bmpread.o: ${SRCDIR}/bmpread.hpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/bmpread.cpp -o ${OBJDIR}/bmpread.o $(LDFLAGS)
-
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CC) $(CFLAGS) -c $< -o $@ $(LDFLAGS)
 
 clean:
-	rm ${OBJDIR}/*.o ${BINDIR}/vbcpp
+	rm -fr ${OBJDIR} 
+	rm -f ${BINDIR}/vbcpp
 	
-.PHONY: clean
+.PHONY: clean dirs
+
