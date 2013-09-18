@@ -1,15 +1,12 @@
 #ifndef __CMESHBUFFER_HPP__
 #define __CMESHBUFFER_HPP__
 
-#include <cstring>
-
-#include <lib3ds/file.h>
-#include <lib3ds/material.h>
-#include <lib3ds/mesh.h>
-#include <soil/SOIL.h>
+#include <vector>
 
 #include "Includes.hpp"
 #include "SMaterial.hpp"
+#include "S3DVertex.hpp"
+
 
 //! \brief MeshBuffer class
 /*!
@@ -19,42 +16,34 @@ class CMeshBuffer
 {
 
 public:
-	CMeshBuffer(Lib3dsFile* file, Lib3dsMaterial* material, vbcString texPath);
+	CMeshBuffer();
 
 	virtual ~CMeshBuffer();
 
-
-	bool isValid();
+	void createVBO();
 
 	GLuint getVertexBufferID();
 
-	GLuint getNormalBufferID();
-
-	GLuint getTexCoordBufferID();
-
 	unsigned int getQuantumOfVertices();
 
-	Lib3dsVector* getVertices();
-
-	Lib3dsVector* getNormals();
-
-	Lib3dsTexel* getTexCoords();
+	S3DVertex* getVertices();
 
 	SMaterial& getMaterial();
 
+	bool isValid();
+
+	void setMaterial(SMaterial& material);
+
+
+	void setVerticesData(S3DVertex* vertices, unsigned int quantumOfVertices, bool isValid);
+
 private:
-	void loadGeometry(Lib3dsFile* file, Lib3dsMaterial* material);
+	S3DVertex*	m_Vertices;
 
-
-	Lib3dsVector* m_Vertices;
-	Lib3dsVector* m_Normals;
-	Lib3dsTexel* m_TexCoords;
-	SMaterial _Material;
-	bool m_Valid;
+	SMaterial m_Material;
+	bool m_IsValid;
 	unsigned int m_QuantumOfVertices;
 	GLuint m_VertexBufferID;
-	GLuint m_NormalBufferID;
-	GLuint m_TexCoordBufferID;
 };
 
 #endif // __CMESHBUFFER_HPP__

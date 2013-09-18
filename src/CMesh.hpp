@@ -1,5 +1,5 @@
-#ifndef __CBUSMESH_HPP__
-#define __CBUSMESH_HPP__
+#ifndef __CMESH_HPP__
+#define __CMESH_HPP__
 
 #include <vector>
 #include <cassert>
@@ -10,26 +10,19 @@
 #include "CReferenceCounter.hpp"
 #include "CMeshBuffer.hpp"
 
-#include <glm/glm.hpp>
-
-typedef glm::vec2 vec2;
-typedef glm::vec3 vec3;
-typedef glm::vec4 vec4;
-typedef glm::mat4 mat4;
-
 
 typedef std::vector<CMeshBuffer*> MeshBufferList;
 
 
-class CBusMesh : virtual public CReferenceCounter
+class CMesh : virtual public CReferenceCounter
 {
 	public:
 
-		CBusMesh();
+		CMesh();
 
-		CBusMesh(vbcString filename, vbcString texturePath);
+		virtual ~CMesh();
 
-		virtual ~CBusMesh();
+		void addMeshBuffer(CMeshBuffer* mb);
 
 		CMeshBuffer* getMeshBuffer(unsigned int i);
   
@@ -40,4 +33,4 @@ class CBusMesh : virtual public CReferenceCounter
 		MeshBufferList m_MeshBuffers;
 };
 
-#endif // __CBUSMESH_HPP__
+#endif // __CMESH_HPP__

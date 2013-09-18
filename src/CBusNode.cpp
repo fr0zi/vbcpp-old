@@ -11,32 +11,34 @@
 
 		CBusNode::~CBusNode()
 		{
-			if(m_BusMesh)
-				m_BusMesh->drop();
+			if(m_Mesh)
+				m_Mesh->drop();
 		}
 
 
-		void CBusNode::setBusMesh(CBusMesh* mesh)
+		void CBusNode::setMesh(CMesh* mesh)
 		{
-			m_BusMesh = mesh;
+			m_Mesh = mesh;
+			m_Mesh->grab();
 		}
 
-		CBusMesh* CBusNode::getBusMesh()
+		CMesh* CBusNode::getMesh()
 		{
-			return m_BusMesh;
+			return m_Mesh;
 		}
 
 		void CBusNode::render()
 		{	
+			
 			GLuint TextureID = glGetUniformLocation(m_ShaderProgramID, "myTextureSampler");
 			GLuint AlphaValueID = glGetUniformLocation(m_ShaderProgramID, "alpha");
 		
 			CMeshBuffer* mb;
 		
 	  		//First we draw all solid objects
-			for(unsigned int mbLoop = 0; mbLoop < m_BusMesh->getQuantumOfMeshBuffers(); mbLoop++)
+			for(unsigned int mbLoop = 0; mbLoop < m_Mesh->getQuantumOfMeshBuffers(); mbLoop++)
 			{
-				mb = m_BusMesh->getMeshBuffer(mbLoop);
+				mb = m_Mesh->getMeshBuffer(mbLoop);
 
 				if(mb->getMaterial().transparency == 0)
 				{	
@@ -44,22 +46,26 @@
 					glBindTexture(GL_TEXTURE_2D, mb->getMaterial().textureId);
 					
 					glUniform1i(TextureID, 0);
-					glUniform1f(AlphaValueID, mb->getMaterial().transparency);
-					
-					
+					glUniform1f(AlphaValueID, mb->getMaterial().transparency);			
+
+
+					// Setting interleaved VBO
+					// Vertices: 3 x float, repeated in 32 bytes (8 * sizeof(float)), starting at 0 byte
 					glEnableVertexAttribArray(0);
 					glBindBuffer(GL_ARRAY_BUFFER, mb->getVertexBufferID() );
-					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0 );
-					
-					glEnableVertexAttribArray(1);
-					glBindBuffer(GL_ARRAY_BUFFER, mb->getNormalBufferID() );
-					glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0, (void*)0 );
+					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0 );
 
+					// Normals: 3 x float, repeated in 32 bytes (8 * sizeof(float)), starting at 12 byte (3 * sizeof(float))
+					glEnableVertexAttribArray(1);
+					glBindBuffer(GL_ARRAY_BUFFER, mb->getVertexBufferID() );
+					glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*) (sizeof(float)*3) );
+
+					// Texture coords: 2 x float, repeated in 32 bytes (8 * sizeof(float)), starting at 24 byte (6 * sizeof(float))
 					glEnableVertexAttribArray(2);
-					glBindBuffer(GL_ARRAY_BUFFER, mb->getTexCoordBufferID() );
-					glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
-				
+					glBindBuffer(GL_ARRAY_BUFFER, mb->getVertexBufferID() );
+					glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*) (sizeof(float)*6) );
 					
+					// Drawing VBO
 					glDrawArrays(GL_TRIANGLES, 0, mb->getQuantumOfVertices() );
 					
 
@@ -71,9 +77,9 @@
 
 	  			//Secondly - we draw all transparent objects.
 	  			//Transparency ratio is set from material variable 'transparency'
-			for(unsigned int mbLoop = 0; mbLoop < m_BusMesh->getQuantumOfMeshBuffers(); mbLoop++)
+			for(unsigned int mbLoop = 0; mbLoop < m_Mesh->getQuantumOfMeshBuffers(); mbLoop++)
 			{
-				mb = m_BusMesh->getMeshBuffer(mbLoop);
+				mb = m_Mesh->getMeshBuffer(mbLoop);
 
 				if(mb->getMaterial().transparency <= 1)
 				{
@@ -84,20 +90,26 @@
 
 					glDisable(GL_LIGHTING);
 					glEnable(GL_BLEND);					
-					
+								
+
+					// Setting interleaved VBO
+					// Vertices: 3 x float, repeated in 32 bytes (8 * sizeof(float)), starting at 0 byte
 					glEnableVertexAttribArray(0);
 					glBindBuffer(GL_ARRAY_BUFFER, mb->getVertexBufferID() );
-					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0 );
-					
-					glEnableVertexAttribArray(1);
-					glBindBuffer(GL_ARRAY_BUFFER, mb->getNormalBufferID() );
-					glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0, (void*)0 );
+					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0 );
 
+					// Normals: 3 x float, repeated in 32 bytes (8 * sizeof(float)), starting at 12 byte (3 * sizeof(float))
+					glEnableVertexAttribArray(1);
+					glBindBuffer(GL_ARRAY_BUFFER, mb->getVertexBufferID() );
+					glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*) (sizeof(float)*3) );
+
+					// Texture coords: 2 x float, repeated in 32 bytes (8 * sizeof(float)), starting at 24 byte (6 * sizeof(float))
 					glEnableVertexAttribArray(2);
-					glBindBuffer(GL_ARRAY_BUFFER, mb->getTexCoordBufferID() );
-					glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
+					glBindBuffer(GL_ARRAY_BUFFER, mb->getVertexBufferID() );
+					glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*) (sizeof(float)*6) );
+
 				
-				
+					// Drawing VBO
 					glDrawArrays(GL_TRIANGLES, 0, mb->getQuantumOfVertices() );
 
 					
@@ -109,6 +121,7 @@
 					glEnable(GL_LIGHTING);
 				}
 			}
+			
 		}
 		
 

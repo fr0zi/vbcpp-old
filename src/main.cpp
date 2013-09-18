@@ -36,29 +36,34 @@ int calcFPS(double theTimeInterval = 1.0, std::string theWindowTitle = "NONE")
 	static int oldfps = 0; 
 	// Set the initial FPS value to 0.0   
 	
-	int newfps = 0;
+	static double oldTime = 0;
+
+	double newfps = 0;
 	
 	// Get the current time in seconds since the program started (non-static, so executed every time) 
 	double currentTime = glfwGetTime();   
 	
 	// Ensure the time interval between FPS checks is sane (low cap = 0.1s, high-cap = 10.0s) 
 	// Negative numbers are invalid, 10 fps checks per second at most, 1 every 10 secs at least. 
-	if (theTimeInterval < 0.1) 
-	{ 
-		theTimeInterval = 0.1; 
-	} 
-	if (theTimeInterval > 10.0) 
-	{ 
-		theTimeInterval = 10.0; 
-	}   
+	//if (theTimeInterval < 0.1) 
+	//{ 
+	//	theTimeInterval = 0.1; 
+	//} 
+	//if (theTimeInterval > 10.0) 
+	//{ 
+	//	theTimeInterval = 10.0; 
+	//}   
 	
 	// Calculate and display the FPS every specified time interval 
 	
-	if ((currentTime - t0Value) > theTimeInterval) 
-	{ 
+	//if ((currentTime - t0Value) > theTimeInterval) 
+	//{ 
 		// Calculate the FPS as the number of frames divided by the interval in seconds 
-		newfps = (double)fpsFrameCount / (currentTime - t0Value);   
-		
+		//newfps = (double)fpsFrameCount / (currentTime - t0Value);   
+		//newfps = (double)fpsFrameCount / currentTime;		
+
+		newfps = currentTime - oldTime;
+
 		if( newfps != oldfps )
 		{
 		
@@ -82,17 +87,19 @@ int calcFPS(double theTimeInterval = 1.0, std::string theWindowTitle = "NONE")
 			}
 		}
 		
-		oldfps = newfps;
+		oldTime = currentTime;
+
+		//oldfps = newfps;
 		
 		// Reset the FPS frame counter and set the initial time to be now 
 		
-		fpsFrameCount = 0; 
-		t0Value = glfwGetTime(); 
-	} 
-	else // FPS calculation time interval hasn't elapsed yet? Simply increment the FPS frame counter 
-	{ 
-		fpsFrameCount++; 
-	}   // Return the current FPS - doesn't have to be used if you don't want it! 
+		//fpsFrameCount = 0; 
+		//t0Value = glfwGetTime(); 
+	//} 
+	//else // FPS calculation time interval hasn't elapsed yet? Simply increment the FPS frame counter 
+	//{ 
+		//fpsFrameCount++; 
+	//}   // Return the current FPS - doesn't have to be used if you don't want it! 
 		
 	return oldfps; 
 }
@@ -103,7 +110,8 @@ void readInput()
 	// Check if the ESC key was pressed or the window was closed
 	if( glfwGetKey( GLFW_KEY_ESC ) == GLFW_PRESS )
 			EGameState = EGS_QUIT;
-			
+	
+	
 	if( glfwGetKey( GLFW_KEY_LEFT ) == GLFW_PRESS )
 	{
 		float zRot = busNode->getZRotation();
@@ -142,7 +150,8 @@ void readInput()
 	
 		xRot -= 0.05f;
 		busNode->setXRotation( xRot );
-	}	
+	}
+	
 }
 
 
@@ -223,10 +232,24 @@ int main(int argc, char* argv[])
 	CDirector* smgr = new CDirector(0, "Director");
 
 	// Loading mesh from 3ds file, adding Bus Node to Scene Manager and setting mesh for it
-	CBusMesh* busMesh = new CBusMesh(argv[1], argv[2]);
+	CLoader3ds* loader3ds = new CLoader3ds;
+
+	CMesh* busMesh = loader3ds->getMesh(argv[1], argv[2]);
+
+	delete loader3ds;
+
 	busNode = smgr->addBusMeshSceneNode(busMesh, "Bus"); 
 	busNode->setXRotation(-90.0f);
+
+	vec3 pos = vec3(5,0,0);
+	busNode->setPosition(pos);
 	
+	CBusNode* node1 = smgr->addBusMeshSceneNode(busMesh, "Foo2");
+	node1->setXRotation(-90.0f);
+
+	pos = vec3(-5,0,0);
+	node1->setPosition(pos);
+
 	// Setting game state to RUN
 	EGameState = EGS_RUN;
 

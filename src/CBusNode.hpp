@@ -3,7 +3,7 @@
 
 
 #include "CNode.hpp"
-#include "CBusMesh.hpp"
+#include "CMesh.hpp"
 
 
 class CBusNode : public CNode
@@ -19,15 +19,15 @@ class CBusNode : public CNode
 		virtual ~CBusNode();
 
 
-		void setBusMesh(CBusMesh* mesh);
+		void setMesh(CMesh* mesh);
 
-		CBusMesh* getBusMesh();
+		CMesh* getMesh();
 
 		void render();
 		
 		
 	private:
-		CBusMesh*	m_BusMesh;
+		CMesh*	m_Mesh;
 
 };
 

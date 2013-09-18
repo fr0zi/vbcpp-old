@@ -4,6 +4,8 @@
 #include "CNode.hpp"
 #include "CBusNode.hpp"
 
+#include "CLoader3ds.hpp"
+
 #include "shader.hpp"
 
 typedef struct CameraStruct
@@ -13,6 +15,8 @@ typedef struct CameraStruct
 	
 	float wHeight, wWidth;
 	float viewAngle;
+
+	// Near and far visibility values
 	float nValue, fValue;
 	
 	vec3 Position;
@@ -20,7 +24,7 @@ typedef struct CameraStruct
 	vec3 UpVector;
 	
 	CameraStruct() 
-		: wHeight(640), wWidth(480), viewAngle(45.0f), nValue(0.1f), fValue(1000.0f), 
+	: wHeight(640), wWidth(480), viewAngle(45.0f), nValue(0.1f), fValue(1000.0f), 
 			Position(vec3(0,0,10)), LookAt(vec3(0,0,0)), UpVector(vec3(0,1,0)),
 			ProjectionMatrix(1.0), ViewMatrix(1.0)
 	{
@@ -60,7 +64,7 @@ typedef struct CameraStruct
 	
 	void updateProjectionMatrix()
 	{
-		ProjectionMatrix = glm::perspective(viewAngle, wWidth / wHeight, 0.1f, 1000.0f);
+		ProjectionMatrix = glm::perspective(viewAngle, wWidth / wHeight, nValue, fValue);
 	}
 	
 	void setPosition(vec3 position)
@@ -97,9 +101,8 @@ typedef struct CameraStruct
 class CDirector : public CNode
 {
 	public:
-		CDirector(CNode* parent = 0,
-					vbcString name = "Director")
-					: CNode(parent, name)
+		CDirector(CNode* parent = 0, vbcString name = "Director")
+		: CNode(parent, name)
 		{
             printf("Creating Scene Manager\n");
 			
@@ -125,14 +128,14 @@ class CDirector : public CNode
 		}
 		
 
-		CBusNode* addBusMeshSceneNode(CBusMesh* mesh, vbcString name = "", 
+		CBusNode* addBusMeshSceneNode(CMesh* mesh, vbcString name = "", 
 			vec3 position = vec3(0,0,0), float rotationAngle = 0.0f, vec3 rotationVector = vec3(0,1,0), vec3 scale = vec3(1,1,1))
 		{
 			CBusNode* node = new CBusNode(this, name);
 			
 			node->setShaderProgramID( LoadShaders("shader.vert", "shader.frag") );
 			
-			node->setBusMesh(mesh);
+			node->setMesh(mesh);
 
 			node->drop();
 
