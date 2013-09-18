@@ -1,6 +1,6 @@
 CC = g++
 INCPATH = include
-SRC =  main.cpp CMesh.cpp CMeshBuffer.cpp CBusNode.cpp CNode.cpp shader.cpp bmpread.cpp
+SRC =  main.cpp CMesh.cpp CMeshBuffer.cpp CLoader3ds.cpp CBusNode.cpp CNode.cpp shader.cpp bmpread.cpp
 OBJS = $(patsubst %.cpp, %.o, ${SRC})
 LIBS = -lopengl32 -lglu32
 MYLIBS = -L"libs/win" -lglew32.dll -lglfw -l3ds -lSOIL
@@ -17,26 +17,9 @@ OBJPATH = $(addprefix ${OBJDIR}/, ${OBJS})
 ${BINDIR}/vbcpp.exe: ${OBJPATH}
 	$(CC) ${OBJPATH} $(CFLAGS) -o ${BINDIR}/vbcpp.exe $(LDFLAGS)
 		
-${OBJDIR}/main.o: ${SRCDIR}/main.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/main.cpp -o ${OBJDIR}/main.o $(LDFLAGS)
 
-${OBJDIR}/CMeshBuffer.o: ${SRCDIR}/CMeshBuffer.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/CMeshBuffer.cpp -o ${OBJDIR}/CMeshBuffer.o $(LDFLAGS)
-	
-${OBJDIR}/CBusNode.o: ${SRCDIR}/CBusNode.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/CBusNode.cpp -o ${OBJDIR}/CBusNode.o $(LDFLAGS)
-
-${OBJDIR}/CMesh.o: ${SRCDIR}/CMesh.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/CMesh.cpp -o ${OBJDIR}/CMesh.o $(LDFLAGS)
-
-${OBJDIR}/CNode.o: ${SRCDIR}/CNode.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/CNode.cpp -o ${OBJDIR}/CNode.o $(LDFLAGS)
-
-${OBJDIR}/shader.o: ${SRCDIR}/shader.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/shader.cpp -o ${OBJDIR}/shader.o $(LDFLAGS)
-
-${OBJDIR}/bmpread.o: ${SRCDIR}/bmpread.cpp
-	$(CC) $(CFLAGS) -c ${SRCDIR}/bmpread.cpp -o ${OBJDIR}/bmpread.o $(LDFLAGS)
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CC) $(CFLAGS) -c $< -o $@ $(LDFLAGS)
 
 
 clean:
