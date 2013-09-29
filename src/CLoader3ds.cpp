@@ -1,9 +1,10 @@
 #include "CLoader3ds.hpp"
 
-CLoader3ds::CLoader3ds()
+CLoader3ds::CLoader3ds(CWarehouser* warehouser) : m_Warehouser(warehouser)
 {
 
 }
+
 
 CLoader3ds::~CLoader3ds()
 {
@@ -12,7 +13,7 @@ CLoader3ds::~CLoader3ds()
 		lib3ds_file_free(m_File3ds);
 
 		m_File3ds = 0;
-	}	
+	}
 }
 
 
@@ -25,7 +26,7 @@ CMesh* CLoader3ds::getMesh(vbcString filename, vbcString texPath)
 	CMesh* mesh = new CMesh;
 
 	Lib3dsMaterial* material;
-			
+
 	for (material = m_File3ds->materials; material != NULL; material = material->next)
 	{
 		// Create new mesh buffer
@@ -60,7 +61,6 @@ CMesh* CLoader3ds::getMesh(vbcString filename, vbcString texPath)
 	// Return loaded mesh
 	return mesh;
 }
-
 
 
 SMaterial CLoader3ds::loadMaterialData(Lib3dsMaterial* material, vbcString texPath)
@@ -101,31 +101,19 @@ SMaterial CLoader3ds::loadMaterialData(Lib3dsMaterial* material, vbcString texPa
 
 	sMaterial.textureName = texStr;
 
-	
 	vbcString texturePath = texPath + sMaterial.textureName;
 
 	GLuint texId = 0;
-	
-		
-	if( sMaterial.textureName != "" )
-	{	
-		printf("Loading texture: %s\n", texturePath.c_str() );
-		
-		texId = SOIL_load_OGL_texture(texturePath.c_str(),
-											SOIL_LOAD_AUTO,
-											SOIL_CREATE_NEW_ID,
-											SOIL_FLAG_MIPMAPS | SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_COMPRESS_TO_DXT);
 
-		if( texId == 0 )
-		{
-			printf( "SOIL error! %s: %s\n", SOIL_last_result(), texturePath.c_str() );
-		}
+
+	if( sMaterial.textureName != "" )
+	{
+		texId = m_Warehouser->loadTexture(texturePath.c_str());
 
 		printf("Texture ID: %d\n", texId);
-			
-		sMaterial.textureId = texId;		
+
+		sMaterial.textureId = texId;
 	}
-	
 
 	return sMaterial;
 }
@@ -136,7 +124,6 @@ S3DVertex* CLoader3ds::loadGeometryByMaterial(SMaterial& material, unsigned int&
 	Lib3dsMesh* mesh;
 	Lib3dsFace* face;
 
-	//VertexList vertices;
 
 	unsigned int validFaces = 0;
 
@@ -159,7 +146,7 @@ S3DVertex* CLoader3ds::loadGeometryByMaterial(SMaterial& material, unsigned int&
 	// Each face (triangle) has 3 vertices, so total quantity of vertices is number of faces * 3
 	quantumOfVertices = validFaces * 3;
 
-	S3DVertex* vertices;
+	S3DVertex* vertices = 0;
 
 	// If mesh with has any vertices with given material, we load them
 	if(isValid)
@@ -231,7 +218,7 @@ S3DVertex* CLoader3ds::loadGeometryByMaterial(SMaterial& material, unsigned int&
 			delete[] tmpNormals;
 
 		}
-		
+
 	}
 
 	return vertices;

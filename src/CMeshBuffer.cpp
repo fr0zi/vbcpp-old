@@ -67,7 +67,8 @@ void CMeshBuffer::setVerticesData(S3DVertex* vertices, unsigned int quantumOfVer
 
 	m_IsValid = isValid;
 
-	printf("Number of vertices: %d\n", m_QuantumOfVertices);
+	// for debugging
+	//printf("Number of vertices: %d\n", m_QuantumOfVertices);
 }
 
 

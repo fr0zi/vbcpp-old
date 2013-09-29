@@ -6,12 +6,12 @@
 #include "CMesh.hpp"
 
 
-class CBusNode : public CNode
+class CBusNode : virtual public CNode
 {
 	public:
-		CBusNode(CNode* parent = 0, vbcString name = "",
+		CBusNode(CNode* parent = 0, vbcString name = "BusNode",
 		vec3 position = vec3(0,0,0),
-		float xRotation = 0.0f, 
+		float xRotation = 0.0f,
 		float yRotation = 0.0f,
 		float zRotation = 0.0f,
 		vec3 scale = vec3(1,1,1));
@@ -23,9 +23,9 @@ class CBusNode : public CNode
 
 		CMesh* getMesh();
 
-		void render();
-		
-		
+		virtual void render();
+
+
 	private:
 		CMesh*	m_Mesh;
 

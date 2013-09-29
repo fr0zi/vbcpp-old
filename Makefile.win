@@ -3,7 +3,7 @@ INCPATH = include
 SRC =  main.cpp CMesh.cpp CMeshBuffer.cpp CLoader3ds.cpp CBusNode.cpp CNode.cpp shader.cpp bmpread.cpp
 OBJS = $(patsubst %.cpp, %.o, ${SRC})
 LIBS = -lopengl32 -lglu32
-MYLIBS = -L"libs/win" -lglew32.dll -lglfw -l3ds -lSOIL
+MYLIBS = -L"libs/win" -lglew32.dll -lglfw -l3ds
 LDFLAGS = $(MYLIBS) $(LIBS)
 CFLAGS = -I$(INCPATH)
 

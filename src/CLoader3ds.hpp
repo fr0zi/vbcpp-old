@@ -10,11 +10,12 @@
 
 #include "Includes.hpp"
 #include "CMesh.hpp"
+#include "CWarehouser.hpp"
 
 class CLoader3ds
 {
 	public:
-		CLoader3ds();
+		CLoader3ds(CWarehouser* warehouser);
 		virtual ~CLoader3ds();
 
 		CMesh* getMesh(vbcString filename, vbcString texPath);
@@ -24,6 +25,7 @@ class CLoader3ds
 
 		S3DVertex* loadGeometryByMaterial(SMaterial& material, unsigned int& quantumOfVertices, bool& isValid);
 
+		CWarehouser* m_Warehouser;
 		Lib3dsFile* m_File3ds;
 };
 

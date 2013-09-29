@@ -1,9 +1,8 @@
-#ifndef CNODE_HPP_INCLUDED
-#define CNODE_HPP_INCLUDED
+#ifndef __CNODE_HPP__
+#define __CNODE_HPP__
 
 #include <string>
 #include <list>
-#include <iostream>
 
 #include <glew/glew.h>
 #include <glfw/glfw.h>
@@ -11,20 +10,35 @@
 #include "Includes.hpp"
 #include "CReferenceCounter.hpp"
 
+#include "CVisioner.hpp"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 using namespace glm;
 
+class CDirector;
 
-#define DEBUG_MODE
+//! \brief Node class
+/*!
+	Node represents single element on the scene.
+ */
 
 class CNode : virtual public CReferenceCounter
 {
-public:
+    public:
 
-	//! CONSTRUCTOR
-	CNode(CNode* parent = 0, vbcString name = "",
+		//! CONSTRUCTOR
+		/*!
+			\param parent Parent node
+			\param name Node name
+			\param position Node position on the scene
+			\param xRotation Node rotation in X axis
+			\param yRotation Node rotation in Y axis
+			\param zRotation Node rotation in Z axis
+			\param scale Node scale
+		*/
+		CNode(CNode* parent = 0, vbcString name = "Node",
 			vec3 position = vec3(0,0,0),
 			float xRotation = 0.0f,
 			float yRotation = 0.0f,
@@ -33,110 +47,116 @@ public:
 		);
 
         //! DESTRUCTOR
-	virtual ~CNode();
+		virtual ~CNode();
 
-        //! Add child Entity
+        //! Add child node
         virtual void addChild(CNode* child);
 
-        //! Setting entity's name
+        //! Set node's name
         virtual void setName(const vbcString name);
 
-        //! Getting entity's name
+        //! Get node's name
         virtual vbcString getName() const;
 
-
-	//! Get Transform Matrix
+		//! Get absolute transformation matrix
         virtual mat4 getAbsoluteTransformation();
 
-
-	//! Remove Entity from the scene
+		//! Remove node from parent node
+		/*!
+			This removes node from parent's children list. If node is not attached to any other node nor the Director - it will be removed from memory 
+			due to reference counting. 
+		*/
         virtual void remove();
 
-        //! Remove entity from children list
+        //! Remove node from children list
         virtual bool removeChild(CNode* child);
 
         //! Remove all children
         virtual void removeAll();
 
-        //! Set parent Entity
+        //! Set parent node
         virtual void setParent(CNode* parent);
 
-	//! Set position
+		//! Set position
         virtual void setPosition(vec3 position);
 
-	//! Set rotation
+		//! Set rotation in X axis
         virtual void setXRotation(GLfloat angle);
-		
-	//! Set rotation
-        virtual void setYRotation(GLfloat angle);		
-		
-		//! Set rotation
-        virtual void setZRotation(GLfloat angle);		
-		
-	float getXRotation();		
-		
-	float getYRotation();		
-		
-	float getZRotation();		
-		
-	//! Set scale
+
+		//! Set rotation in Y axis
+        virtual void setYRotation(GLfloat angle);
+
+		//! Set rotation in Z axis
+        virtual void setZRotation(GLfloat angle);
+
+		//! Get rotation in X axis
+		float getXRotation();
+
+		//! Get rotation in Y axis
+		float getYRotation();
+
+		//! Get rotation in Z axis
+		float getZRotation();
+
+		//! Set scale
         virtual void setScale(vec3 scale);
-		
-	//! Set absolute transformation
+
+		//! Set absolute transformation
         virtual void updateAbsoluteTransformation();
 
-	//! Get visibility flag
-	const virtual bool getVisibility() const;
+		//! Get visibility flag
+		virtual bool getVisibility() const;
 
-	//! Set visibility of Entity
-	virtual void setVisibility(bool visibility);
-		
-	//! Render Entity
-	virtual void render() = 0;
+		//! Set visibility of Entity
+		virtual void setVisibility(bool visibility);
+
+		//! Render node
+		virtual void render();
 
 		//! Return shader id
         virtual GLuint getShaderProgramID();
 
-		//! Set shader id for Entity
+		//! Set shader id for node
         virtual void setShaderProgramID(GLuint programId);
 
 
     protected:
         //! Pointer to parent entity
         CNode*		m_Parent;
-		
+
         //! Children list
         std::list<CNode*>	m_Children;
 
         //! Entity name
         vbcString	m_Name;
 
-	//! Transformation matrix
-	mat4 m_AbsoluteTransformation;
+		//! Transformation matrix
+		mat4 m_AbsoluteTransformation;
 
-	//! Position vector
-        vec3 RelativePosition;
+		//! Position vector
+        vec3 m_RelativePosition;
 
-	//! Rotation vector
-        vec3 RelativeRotation;
+		//! Rotation vector
+        vec3 m_RelativeRotation;
 
         //! X Rotation angle
         GLfloat m_XRotationAngle;
-		
+
         //! Y Rotation angle
-        GLfloat m_YRotationAngle;		
+        GLfloat m_YRotationAngle;
 
         //! Z Rotation angle
-        GLfloat m_ZRotationAngle;		
-		
-	//! Scale vector
-        vec3 RelativeScale;
+        GLfloat m_ZRotationAngle;
 
-	//! Entity visibility flag
+		//! Scale vector
+        vec3 m_RelativeScale;
+
+		//! Entity visibility flag
         bool m_IsVisible;
 
 	//! Shader program id
         GLuint m_ShaderProgramID;
 };
 
-#endif // CNODE_HPP_INCLUDED
+#endif // __CNODE_HPP__
+
