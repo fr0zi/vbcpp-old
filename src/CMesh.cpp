@@ -23,6 +23,10 @@ void CMesh::addMeshBuffer(CMeshBuffer* mb)
 	m_MeshBuffers.push_back(mb);
 }
 
+void CMesh::setQuantumOfMeshBuffers(unsigned long quantum)
+{
+	m_MeshBuffers.reserve(quantum);
+}
 
 CMeshBuffer* CMesh::getMeshBuffer(unsigned int i)
 {

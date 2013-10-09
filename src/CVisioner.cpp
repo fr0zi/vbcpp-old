@@ -2,13 +2,15 @@
 
 CVisioner::CVisioner(vbcString name) : m_Name(name)
 {
-
+	#ifdef DEBUG_MODE	
+		fprintf(stdout, "Creating Visioner\n");
+	#endif
 }
 
 CVisioner::~CVisioner()
 {
 	#ifdef DEBUG_MODE	
-		fprintf(stdout, "Creating Reference Counted object\n");
+		fprintf(stdout, "Destroying Visioner\n");
 	#endif
 
     m_RenderList.clear();

@@ -118,7 +118,7 @@ class CDirector : virtual public CNode
 			m_Camera->setPosition(vec3(0,5,-15));
 
 			m_Visioner = new CVisioner;
-			//m_Warehouser = new CWarehouser;
+			m_Warehouser = new CWarehouser;
 		}
 
 
@@ -132,11 +132,8 @@ class CDirector : virtual public CNode
 				m_Camera = 0;
 			}
 
-            if (m_Warehouser)
-				m_Warehouser->drop();
-
-            if (m_Visioner)
 				m_Visioner->drop();
+				m_Warehouser->drop();
 		}
 
 
@@ -160,6 +157,19 @@ class CDirector : virtual public CNode
             m_Visioner->registerNodeForRender(node);
 
 			return node;
+		}
+
+
+		CMesh* loadMesh(vbcString filename, vbcString texturePath)
+		{
+			// Loading mesh from 3ds file, adding Bus Node to Scene Manager and setting mesh for it
+			CLoader3ds* loader3ds = new CLoader3ds(m_Warehouser);
+
+			CMesh* mesh = loader3ds->getMesh(filename, texturePath);
+
+			delete loader3ds;
+
+			return mesh;
 		}
 
 

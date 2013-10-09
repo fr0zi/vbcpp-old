@@ -21,6 +21,8 @@ class CLoader3ds
 		CMesh* getMesh(vbcString filename, vbcString texPath);
 
 	private:
+		unsigned long getQuantumOfMaterials();
+
 		SMaterial loadMaterialData(Lib3dsMaterial* material, vbcString texPath);
 
 		S3DVertex* loadGeometryByMaterial(SMaterial& material, unsigned int& quantumOfVertices, bool& isValid);

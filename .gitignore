@@ -3,6 +3,7 @@
 # FILES
 game/buses/*
 game/scenery/*
+Doxyfile
 
 # EXECUTABLES
 game/vbcpp

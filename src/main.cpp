@@ -166,20 +166,12 @@ int main(int argc, char* argv[])
 
 	glfwSetWindowTitle("Virtual Bus Core++");
 
-	visioner = new CVisioner;
-
 	// Creating our Scene Manager
 	director = new CDirector("Director");
 
 
-	warehouser = new CWarehouser;
+	CMesh* busMesh = director->loadMesh(argv[1], argv[2]);
 
-	// Loading mesh from 3ds file, adding Bus Node to Scene Manager and setting mesh for it
-	CLoader3ds* loader3ds = new CLoader3ds(warehouser);
-
-	CMesh* busMesh = loader3ds->getMesh(argv[1], argv[2]);
-
-	delete loader3ds;
 
     busNode = director->addBusMeshSceneNode(0, "Bus", busMesh);
 	busNode->setXRotation(-90.0f);
@@ -241,12 +233,9 @@ int main(int argc, char* argv[])
 	}
 
 
-	warehouser->drop();
 
 	// Dropping Scene Manager
 	director->drop();
-
-	visioner->drop();
 
 	return 0;
 }

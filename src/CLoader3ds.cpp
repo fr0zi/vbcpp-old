@@ -2,7 +2,7 @@
 
 CLoader3ds::CLoader3ds(CWarehouser* warehouser) : m_Warehouser(warehouser)
 {
-
+	m_Warehouser->grab();
 }
 
 
@@ -14,6 +14,20 @@ CLoader3ds::~CLoader3ds()
 
 		m_File3ds = 0;
 	}
+
+	m_Warehouser->drop();
+}
+
+
+unsigned long CLoader3ds::getQuantumOfMaterials()
+{
+	unsigned long quantumOfMaterials = 0;
+	Lib3dsMaterial* material;
+
+	for (material = m_File3ds->materials; material != NULL; material = material->next)
+		quantumOfMaterials++;
+
+	return quantumOfMaterials;
 }
 
 
@@ -24,6 +38,8 @@ CMesh* CLoader3ds::getMesh(vbcString filename, vbcString texPath)
 	assert( m_File3ds != NULL );
 
 	CMesh* mesh = new CMesh;
+
+	mesh->setQuantumOfMeshBuffers( getQuantumOfMaterials() );
 
 	Lib3dsMaterial* material;
 

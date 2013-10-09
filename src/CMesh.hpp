@@ -25,6 +25,8 @@ class CMesh : virtual public CReferenceCounter
 		void addMeshBuffer(CMeshBuffer* mb);
 
 		CMeshBuffer* getMeshBuffer(unsigned int i);
+
+		void setQuantumOfMeshBuffers(unsigned long quantum);
   
 		unsigned int getQuantumOfMeshBuffers();
 
