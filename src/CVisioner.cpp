@@ -48,20 +48,20 @@ void CVisioner::renderNodes()
 
     for (; it != m_RenderList.end(); ++it)
     {
-        GLuint shaderId =  (*it)->getShaderProgramID();
+		if ( (*it)->getIsActive() == true )
+		{
+        	GLuint shaderId =  (*it)->getShaderProgramID();
 
-        GLuint ProjectionMatrixID = glGetUniformLocation(shaderId, "ProjectionMatrix");
-        GLuint ModelMatrixID = glGetUniformLocation(shaderId, "ModelMatrix");
-        GLuint ViewMatrixID = glGetUniformLocation(shaderId, "ViewMatrix");
+			glm::mat4 MVP = m_ProjectionMatrix * m_ViewMatrix * (*it)->getAbsoluteTransformation();
 
-        glUseProgram(shaderId);
+			GLuint MVPID = glGetUniformLocation(shaderId, "MVP");
 
+        	glUseProgram(shaderId);
 
-        glUniformMatrix4fv(ProjectionMatrixID, 1, GL_FALSE, &m_ProjectionMatrix[0][0]);
-        glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &m_ViewMatrix[0][0]);
-        glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(*it)->getAbsoluteTransformation()[0][0]);
+			glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
 
-        (*it)->render();
+        	(*it)->render();
+		}
     }
 
 }

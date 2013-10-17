@@ -197,14 +197,18 @@ GLuint CWarehouser::addTextureTGA(vbcString filename)
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	// Read the file, call glTexImage2D with the right parameters
-	glfwLoadTexture2D(filename.c_str(), 0);
+	//glfwLoadTexture2D(filename.c_str(), 0);
+
+	//textureID = load_texture_TGA( filename.c_str(), NULL, NULL, GL_REPEAT, GL_REPEAT );
+
+	textureID = 0;
 
 	// Nice trilinear filtering.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
-	glGenerateMipmap(GL_TEXTURE_2D);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
+	//glGenerateMipmap(GL_TEXTURE_2D);
 
 	// Return the ID of the texture we just created
 	return textureID;

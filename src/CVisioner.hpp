@@ -40,6 +40,9 @@ class CVisioner : virtual public CReferenceCounter
 		//! Current view matrix
 		glm::mat4	m_ViewMatrix;
 
+		//! Current Model-View-Projection matrix
+		glm::mat4	m_MVPMatrix;
+
 		//! Current shader
 		GLuint		m_CurrentShaderID;
 

@@ -1,5 +1,5 @@
 #include <glew/glew.h>
-#include <glfw/glfw.h>
+#include <glfw/glfw3.h>
 
 #include <string>
 #include <sstream>
@@ -20,8 +20,11 @@
 CDirector* director = 0;
 CWarehouser* warehouser = 0;
 CVisioner* visioner = 0;
+CMeshNode* busNode = 0;
+CMeshNode* node1 = 0;
 
-CBusNode* busNode = 0;
+bool state1 = true;
+bool state2 = true;
 
 enum _EGameState {
 	EGS_RUN,
@@ -33,14 +36,36 @@ std::string windowTitle = "Virtual Bus Core++";
 
 
 
-void readInput()
+static void keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Check if the ESC key was pressed or the window was closed
-	if( glfwGetKey( GLFW_KEY_ESC ) == GLFW_PRESS )
+	if (key == GLFW_KEY_ESCAPE && action  == GLFW_PRESS)
+	{
 			EGameState = EGS_QUIT;
+			glfwSetWindowShouldClose(window, GL_TRUE);
+	}
+
+	if (key == GLFW_KEY_A && action == GLFW_PRESS )
+	{
+		state1 = !state1;
+
+		busNode->setIsActive(state1);
+	}
+
+	if (key == GLFW_KEY_S && action == GLFW_PRESS )
+	{
+		state2 = !state2;
+
+		node1->setIsActive(state2);
+	}
+}
 
 
-	if( glfwGetKey( GLFW_KEY_LEFT ) == GLFW_PRESS )
+void readInput(GLFWwindow* window)
+{
+
+
+	if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS)
 	{
 		float zRot = busNode->getZRotation();
 
@@ -50,9 +75,10 @@ void readInput()
 			zRot = 0.0f;
 
 		busNode->setZRotation( zRot );
+
 	}
 
-	if( glfwGetKey( GLFW_KEY_RIGHT ) == GLFW_PRESS )
+	if (glfwGetKey( window, GLFW_KEY_RIGHT ) == GLFW_PRESS)
 	{
 		float zRot = busNode->getZRotation();
 
@@ -64,7 +90,7 @@ void readInput()
 		busNode->setZRotation( zRot );
 	}
 
-	if( glfwGetKey( GLFW_KEY_UP ) == GLFW_PRESS )
+	if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS)
 	{
 		float xRot = busNode->getXRotation();
 
@@ -76,7 +102,7 @@ void readInput()
 		busNode->setXRotation( xRot );
 	}
 
-	if( glfwGetKey( GLFW_KEY_DOWN ) == GLFW_PRESS )
+	if (glfwGetKey( window, GLFW_KEY_DOWN ) == GLFW_PRESS)
 	{
 		float xRot = busNode->getXRotation();
 
@@ -87,35 +113,46 @@ void readInput()
 
 		busNode->setXRotation( xRot );
 	}
+}
 
+
+static void error_callback(int error, const char* description)
+{
+	fputs(description, stderr);
 }
 
 
 //! Create a window
-int createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yPos = 0)
+GLFWwindow* createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yPos = 0)
 {
+	glfwSetErrorCallback(error_callback);
+
+	GLFWwindow* window;
+
     if ( !glfwInit() )
     {
         fprintf( stderr, "VIDEO: Failed to initialize GLFW!\n");
-        return 0;
+        exit(EXIT_FAILURE);
     }
 
-    glfwOpenWindowHint(GLFW_FSAA_SAMPLES, 4); //4x antialiasing
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
-    glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
-    glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_SAMPLES, 4); //4x antialiasing
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	glfwOpenWindowHint( GLFW_WINDOW_NO_RESIZE, GL_TRUE );
+	glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
-    // Open window and create its OpenGL context
-    if( !glfwOpenWindow( width, height, 0, 0, 0, 0, 32, 0, GLFW_WINDOW ))
-    {
-        fprintf( stderr, "VIDEO: Failed to open GLFW window!\n");
-        glfwTerminate();
-        return 0;
-    }
+	window = glfwCreateWindow(width, height, "VBC++ Window", NULL, NULL);
+	
+	if (!window)
+	{
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
 
-	glfwSetWindowPos(xPos, yPos);
+	glfwMakeContextCurrent(window);
+
+	glfwSetWindowPos(window, xPos, yPos);
 
 	glewExperimental = GL_TRUE;
 
@@ -123,7 +160,7 @@ int createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yPos = 0)
     if( glewInit() != GLEW_OK )
     {
         fprintf( stderr, "VIDEO: Failed to initialize GLEW!\n");
-        return 0;
+        exit(EXIT_FAILURE);
     }
 
 	if (GLEW_VERSION_3_3)
@@ -133,7 +170,7 @@ int createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yPos = 0)
 	else
 	{
 		fprintf( stderr, "VIDEO: OpenGL 3.3 Core is not suported! NOT GOOD!\n");
-		return 0;
+		exit(EXIT_FAILURE);
 	}
 
 	glShadeModel(GL_SMOOTH);
@@ -146,7 +183,7 @@ int createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yPos = 0)
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	return 1;
+	return window;
 }
 
 
@@ -161,10 +198,11 @@ int main(int argc, char* argv[])
 	
 
 	// Creating OpenGL window
-	if(!createWindow(1024, 768, 100, 100))
-		return -1;
+	GLFWwindow* win	= createWindow(1024, 768, 100, 100);
 
-	glfwSetWindowTitle("Virtual Bus Core++");
+	glfwSetWindowTitle(win, "Virtual Bus Core++");
+
+	glfwSetKeyCallback(win, keyboard_callback);
 
 	// Creating our Scene Manager
 	director = new CDirector("Director");
@@ -173,16 +211,15 @@ int main(int argc, char* argv[])
 	CMesh* busMesh = director->loadMesh(argv[1], argv[2]);
 
 
-    busNode = director->addBusMeshSceneNode(0, "Bus", busMesh);
+    busNode = director->addMeshSceneNode(0, "Bus", busMesh);
 	busNode->setXRotation(-90.0f);
 
 	vec3 pos = vec3(-1,0,0);
 	busNode->setPosition(pos);
 
-
-	CBusNode* node1 = director->addBusMeshSceneNode(busNode, "Foo2", busMesh);
+	node1 = director->addMeshSceneNode(busNode, "Foo2", busMesh);
 	node1->setXRotation(90.0f);
-
+	
 
 	pos = vec3(3,3,0);
 	node1->setPosition(pos);
@@ -194,8 +231,9 @@ int main(int argc, char* argv[])
  	int nbFrames = 0;
 
 	// Main loop
-	while( EGameState == EGS_RUN && glfwGetWindowParam( GLFW_OPENED ) )
+	while( EGameState == EGS_RUN && !glfwWindowShouldClose(win) )
 	{
+		readInput(win);
 
 		// Measure speed
 		double currentTime = glfwGetTime();
@@ -219,7 +257,7 @@ int main(int argc, char* argv[])
 			std::string theWindowTitle = windowTitle + " | Timing: " + sTiming;
 			// Convert the new window title to a c_str and set it
 			const char* pszConstString = theWindowTitle.c_str();
-			glfwSetWindowTitle(pszConstString);
+			glfwSetWindowTitle(win, pszConstString);
 		}
 
 		glClearColor(0.7, 0.7, 0.9, 1.0);
@@ -227,9 +265,8 @@ int main(int argc, char* argv[])
 
 			director->runAll();
 
-		glfwSwapBuffers();
-
-		readInput();
+		glfwSwapBuffers(win);
+		glfwPollEvents();
 	}
 
 

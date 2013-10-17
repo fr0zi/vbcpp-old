@@ -1,9 +1,9 @@
 CC = g++ -std=c++0x
 INCPATH = include
-SRC = main.cpp CMesh.cpp CVisioner.cpp CWarehouser.cpp CMeshBuffer.cpp CLoader3ds.cpp CBusNode.cpp CNode.cpp shader.cpp bmpread.cpp
+SRC = main.cpp CMesh.cpp CVisioner.cpp CWarehouser.cpp CMeshBuffer.cpp CLoader3ds.cpp CMeshNode.cpp CNode.cpp shader.cpp
 OBJS = $(patsubst %.cpp, %.o, ${SRC})
-LIBS = -L/usr/lib -lXrandr -lGL -lGLU -lrt
-MYLIBS = -Llibs/linux -lglfw -lGLEW -l3ds
+LIBS = -L/usr/lib -lXrandr -lGL -lGLU -lrt -lXxf86vm -lXi
+MYLIBS = -Llibs/linux -lglfw3 -lGLEW -l3ds
 LDFLAGS = $(LIBS) $(MYLIBS)
 CFLAGS = -I$(INCPATH)
 

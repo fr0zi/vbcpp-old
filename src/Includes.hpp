@@ -2,7 +2,7 @@
 #define __INCLUDES_HPP__
 
 #include <glew/glew.h>
-#include <glfw/glfw.h>
+#include <glfw/glfw3.h>
 
 #include <glm/glm.hpp>
 

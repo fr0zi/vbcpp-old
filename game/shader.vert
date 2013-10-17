@@ -9,16 +9,10 @@ layout(location = 2) in vec2 vertexUV;
 out vec2 UV;
 
 // Values that stay constant for the whole mesh.
-uniform mat4 ModelMatrix;
-uniform mat4 ViewMatrix;
-uniform mat4 ProjectionMatrix;
-
-mat4 MVP;
+uniform mat4 MVP;
 
 void main()
 {
-	MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-
 	// Output position of the vertex, in clip space : MVP * position
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
 	

@@ -11,7 +11,7 @@ CNode::CNode(CNode* parent, vbcString name, vec3 position,
 		m_YRotationAngle(yRotation),
 		m_ZRotationAngle(zRotation),
 		m_RelativeScale(scale),
-		m_IsVisible(true)
+		m_IsActive(true)
 {
 
 	/* This line was couse of error - Segmentation Fault
@@ -40,8 +40,7 @@ CNode::~CNode()
 		std::cout << "\t -- Deleting object " << m_Name << " with all its children.\n";
 	#endif
 
-	if( m_ShaderProgramID > 0 )
-		glDeleteProgram(m_ShaderProgramID);
+
 
 	// Delete all children
 	removeAll();
@@ -58,6 +57,8 @@ void CNode::addChild(CNode* child)
 		m_Children.push_back(child);
 		child->m_Parent = this;
 	}
+
+	child->setIsActive(m_IsActive);
 
 	//std::cout << "Adding child: " << child->getName() << std::endl;
 }
@@ -141,6 +142,8 @@ void CNode::setParent(CNode* parent)
 		m_Parent->addChild(this);
 
 	drop();
+
+	m_IsActive = m_Parent->getIsActive();
 
 	updateAbsoluteTransformation();
 }
@@ -233,21 +236,21 @@ void CNode::updateAbsoluteTransformation()
 
 
 
-bool CNode::getVisibility() const
+bool CNode::getIsActive() const
 {
-    return m_IsVisible;
+    return m_IsActive;
 }
 
 
 
-void CNode::setVisibility(bool visibility)
+void CNode::setIsActive(bool state)
 {
-    m_IsVisible = visibility;
+    m_IsActive = state;
 
     std::list<CNode *>::iterator it = m_Children.begin();
 
     for( ; it != m_Children.end(); ++it )
-        (*it)->setVisibility(visibility);
+        (*it)->setIsActive(state);
 }
 
 
@@ -255,8 +258,6 @@ void CNode::render()
 {
 
 }
-
-
 
 GLuint CNode::getShaderProgramID()
 {

@@ -5,7 +5,7 @@
 
 #include "Includes.hpp"
 #include "CReferenceCounter.hpp"
-#include "CBusNode.hpp"
+#include "CMeshNode.hpp"
 #include "CLoader3ds.hpp"
 #include "CVisioner.hpp"
 #include "shader.hpp"
@@ -137,15 +137,15 @@ class CDirector : virtual public CNode
 		}
 
 
-		CBusNode* addBusMeshSceneNode(CNode* parent = 0, vbcString name = "", CMesh* mesh = 0,
+		CMeshNode* addMeshSceneNode(CNode* parent = 0, vbcString name = "", CMesh* mesh = 0,
 			vec3 position = vec3(0,0,0), float rotationAngle = 0.0f, vec3 rotationVector = vec3(0,1,0), vec3 scale = vec3(1,1,1))
 		{
-			CBusNode* node;
+			CMeshNode* node;
 
             if (parent != 0)
-                node = new CBusNode(parent, name);
+                node = new CMeshNode(parent, name);
             else
-                node = new CBusNode(this, name);
+                node = new CMeshNode(this, name);
 
 
 			node->setShaderProgramID( LoadShaders("shader.vert", "shader.frag") );

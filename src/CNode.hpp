@@ -5,7 +5,7 @@
 #include <list>
 
 #include <glew/glew.h>
-#include <glfw/glfw.h>
+#include <glfw/glfw3.h>
 
 #include "Includes.hpp"
 #include "CReferenceCounter.hpp"
@@ -90,13 +90,13 @@ class CNode : virtual public CReferenceCounter
         virtual void setZRotation(GLfloat angle);
 
 		//! Get rotation in X axis
-		float getXRotation();
+		virtual float getXRotation();
 
 		//! Get rotation in Y axis
-		float getYRotation();
+		virtual float getYRotation();
 
 		//! Get rotation in Z axis
-		float getZRotation();
+		virtual float getZRotation();
 
 		//! Set scale
         virtual void setScale(vec3 scale);
@@ -104,11 +104,11 @@ class CNode : virtual public CReferenceCounter
 		//! Set absolute transformation
         virtual void updateAbsoluteTransformation();
 
-		//! Get visibility flag
-		virtual bool getVisibility() const;
+		//! Get activity flag
+		virtual bool getIsActive() const;
 
-		//! Set visibility of Entity
-		virtual void setVisibility(bool visibility);
+		//! Set activity flag
+		virtual void setIsActive(bool state);
 
 		//! Render node
 		virtual void render();
@@ -151,11 +151,11 @@ class CNode : virtual public CReferenceCounter
 		//! Scale vector
         vec3 m_RelativeScale;
 
-		//! Entity visibility flag
-        bool m_IsVisible;
+		//! Entity activity flag
+        bool m_IsActive;
 
-	//! Shader program id
-        GLuint m_ShaderProgramID;
+		//! Shader program id
+		GLuint m_ShaderProgramID;
 };
 
 #endif // __CNODE_HPP__

@@ -1,8 +1,8 @@
-#include "CBusNode.hpp"
+#include "CMeshNode.hpp"
 
 #include "CDirector.hpp"
 
-CBusNode::CBusNode(CNode* parent, vbcString name, vec3 position,
+CMeshNode::CMeshNode(CNode* parent, vbcString name, vec3 position,
 	float xRotation, float yRotation, float zRotation, vec3 scale)
 	: CNode(parent, name, position,
 		xRotation, yRotation, zRotation, scale)
@@ -11,31 +11,29 @@ CBusNode::CBusNode(CNode* parent, vbcString name, vec3 position,
 }
 
 
-CBusNode::~CBusNode()
+CMeshNode::~CMeshNode()
 {
     m_Mesh->drop();
+
+	if( m_ShaderProgramID > 0 )
+		glDeleteProgram(m_ShaderProgramID);
 }
 
 
-void CBusNode::setMesh(CMesh* mesh)
+void CMeshNode::setMesh(CMesh* mesh)
 {
 	m_Mesh = mesh;
 	m_Mesh->grab();
 }
 
 
-CMesh* CBusNode::getMesh()
+CMesh* CMeshNode::getMesh()
 {
 	return m_Mesh;
 }
 
-void CBusNode::render()
+void CMeshNode::render()
 {
-	if (m_IsVisible == true)
-	{
-	//std::cout << "Render object: " << m_Name << std::endl;
-
-
 	GLuint TextureID = glGetUniformLocation(m_ShaderProgramID, "myTextureSampler");
 	GLuint AlphaValueID = glGetUniformLocation(m_ShaderProgramID, "alpha");
 
@@ -49,9 +47,6 @@ void CBusNode::render()
 
 		if(mb->getMaterial().transparency == 0)
 		{
-
-			//m_Visioner->renderMeshBuffer(mb, ERP_SOLID_PASS );
-
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mb->getMaterial().textureId);
 
@@ -77,7 +72,6 @@ void CBusNode::render()
 
 			// Drawing VBO
 			glDrawArrays(GL_TRIANGLES, 0, mb->getQuantumOfVertices() );
-
 
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);
@@ -124,7 +118,6 @@ void CBusNode::render()
 			glBindBuffer(GL_ARRAY_BUFFER, mb->getVertexBufferID() );
 			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*) (sizeof(float)*6) );
 
-
 			// Drawing VBO
 			glDrawArrays(GL_TRIANGLES, 0, mb->getQuantumOfVertices() );
 
@@ -138,31 +131,6 @@ void CBusNode::render()
 
 		}
 	}
-
-	} // visibility
-
-			/*
-			std::list<CNode*>::iterator it = m_Children.begin();
-
-			for( ; it != m_Children.end(); ++it )
-			{
-					GLuint shaderId =  (*it)->getShaderProgramID();
-
-					GLuint ProjectionMatrixID = glGetUniformLocation(shaderId, "ProjectionMatrix");
-					GLuint ModelMatrixID = glGetUniformLocation(shaderId, "ModelMatrix");
-					GLuint ViewMatrixID = glGetUniformLocation(shaderId, "ViewMatrix");
-
-					glUseProgram(shaderId);
-
-					//m_Director->getCamera();
-
-					//glUniformMatrix4fv(ProjectionMatrixID, 1, GL_FALSE, &(m_Director->getCamera()->ProjectionMatrix[0][0]));
-					//glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &(m_Director->getCamera()->ViewMatrix[0][0]));
-					glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &(*it)->getAbsoluteTransformation()[0][0]);
-
-					(*it)->render();
-			}
-			*/
 }
 
 
