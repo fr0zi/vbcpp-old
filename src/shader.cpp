@@ -39,7 +39,8 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 		FragmentShaderStream.close();
 	}
 
-
+	printf("########## Vertex shader code ########## %s\n ########## \n\n", VertexShaderCode.c_str());
+	printf("########## Fragment shader code ########## %s\n ########## \n\n", FragmentShaderCode.c_str());
 
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
