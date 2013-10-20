@@ -14,17 +14,13 @@
 #include "CDirector.hpp"
 #include "CWarehouser.hpp"
 #include "CVisioner.hpp"
+#include "CCamera.hpp"
 
 #include "shader.hpp"
 
 CDirector* director = 0;
-CWarehouser* warehouser = 0;
-CVisioner* visioner = 0;
-CMeshNode* busNode = 0;
-CMeshNode* node1 = 0;
-
-bool state1 = true;
-bool state2 = true;
+CNode* busNode = 0;
+CNode* node1 = 0;
 
 enum _EGameState {
 	EGS_RUN,
@@ -47,21 +43,21 @@ static void keyboard_callback(GLFWwindow* window, int key, int scancode, int act
 
 	if (key == GLFW_KEY_A && action == GLFW_PRESS )
 	{
-		state1 = !state1;
+		bool state = busNode->getIsActive();
 
-		busNode->setIsActive(state1);
+		busNode->setIsActive(!state);
 	}
 
 	if (key == GLFW_KEY_S && action == GLFW_PRESS )
 	{
-		state2 = !state2;
+		bool state = node1->getIsActive();
 
-		node1->setIsActive(state2);
+		node1->setIsActive(!state);
 	}
 }
 
 
-void readInput(GLFWwindow* window)
+void readInput(GLFWwindow* window, double deltaTime)
 {
 
 
@@ -69,7 +65,7 @@ void readInput(GLFWwindow* window)
 	{
 		float zRot = busNode->getZRotation();
 
-		zRot += 0.1f;
+		zRot += 5.0f * deltaTime;
 
 		if ((zRot < -360.0f) || (zRot > 360.0f))
 			zRot = 0.0f;
@@ -82,7 +78,7 @@ void readInput(GLFWwindow* window)
 	{
 		float zRot = busNode->getZRotation();
 
-		zRot -= 0.1f;
+		zRot -= 5.0f * deltaTime;
 
 		if ((zRot < -360.0f) || (zRot > 360.0f))
 			zRot = 360.f;
@@ -94,7 +90,7 @@ void readInput(GLFWwindow* window)
 	{
 		float xRot = busNode->getXRotation();
 
-		xRot += 0.1f;
+		xRot += 5.0f * deltaTime;
 
 		if ((xRot < -360.0f) || (xRot > 360.0f))
 			xRot = 0.0f;
@@ -106,7 +102,7 @@ void readInput(GLFWwindow* window)
 	{
 		float xRot = busNode->getXRotation();
 
-		xRot -= 0.1f;
+		xRot -= 5.0f * deltaTime;
 
 		if ((xRot < -360.0f) || (xRot > 360.0f))
 			xRot = 0.0f;
@@ -204,40 +200,50 @@ int main(int argc, char* argv[])
 
 	glfwSetKeyCallback(win, keyboard_callback);
 
-	// Creating our Scene Manager
+
+	// CREATING OBJECTS
+
+	// Camera
+	CCamera* cam = new CCamera;
+
+	cam->setWindowDimensions(1024, 768);
+	cam->setPosition(0, 5, -15);
+
+	// Scene Manager
 	director = new CDirector("Director");
 
-
+	// Scene nodes
 	CMesh* busMesh = director->loadMesh(argv[1], argv[2]);
-
 
     busNode = director->addMeshSceneNode(0, "Bus", busMesh);
 	busNode->setXRotation(-90.0f);
 
-	vec3 pos = vec3(-1,0,0);
-	busNode->setPosition(pos);
+	busNode->setPosition(vec3(-1,0,0));
 
 	node1 = director->addMeshSceneNode(busNode, "Foo2", busMesh);
 	node1->setXRotation(90.0f);
 	
+	node1->setPosition(vec3(3,3,0));
 
-	pos = vec3(3,3,0);
-	node1->setPosition(pos);
 
 	// Setting game state to RUN
 	EGameState = EGS_RUN;
 
-	double lastTime = glfwGetTime();
+	double lastTime, oldTime = glfwGetTime();
  	int nbFrames = 0;
 
 	// Main loop
 	while( EGameState == EGS_RUN && !glfwWindowShouldClose(win) )
 	{
-		readInput(win);
-
 		// Measure speed
 		double currentTime = glfwGetTime();
 		nbFrames++;
+
+		// Compute delta time to animation
+		double deltaTime = currentTime - oldTime;
+		oldTime = currentTime;
+
+		readInput(win, deltaTime);
 
 		if ( currentTime - lastTime >= 1.0 )
 		{ // If last window title update was more than 1 sec ago
@@ -260,19 +266,21 @@ int main(int argc, char* argv[])
 			glfwSetWindowTitle(win, pszConstString);
 		}
 
+		// Rendering
 		glClearColor(0.7, 0.7, 0.9, 1.0);
-        	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			director->runAll();
+			director->getVisioner()->renderNodes(cam);
 
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 	}
 
-
-
 	// Dropping Scene Manager
 	director->drop();
+
+	// Dropping camera
+	cam->drop();
 
 	return 0;
 }

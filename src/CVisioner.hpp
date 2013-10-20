@@ -5,6 +5,8 @@
 
 #include "CReferenceCounter.hpp"
 #include "CNode.hpp"
+#include "CVideoComponent.hpp"
+#include "CCamera.hpp"
 
 class CNode;
 
@@ -28,7 +30,7 @@ class CVisioner : virtual public CReferenceCounter
         void registerNodeForRender(CNode* node);
 
 		//! Render registrated nodes
-        void renderNodes();
+        void renderNodes(CCamera* cam);
 
 	protected:
 		//! Internal name

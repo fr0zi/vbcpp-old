@@ -41,8 +41,10 @@ void CVisioner::registerNodeForRender(CNode* node)
 }
 
 
-void CVisioner::renderNodes()
+void CVisioner::renderNodes(CCamera* cam)
 {
+	// TODO: Add sorting function to render transparent object in proper order
+
 
     std::list<CNode*>::iterator it = m_RenderList.begin();
 
@@ -50,18 +52,30 @@ void CVisioner::renderNodes()
     {
 		if ( (*it)->getIsActive() == true )
 		{
-        	GLuint shaderId =  (*it)->getShaderProgramID();
+			std::list<IComponent*> components = (*it)->getComponents();
 
-			glm::mat4 MVP = m_ProjectionMatrix * m_ViewMatrix * (*it)->getAbsoluteTransformation();
+			std::list<IComponent*>::iterator cit = components.begin();
 
-			GLuint MVPID = glGetUniformLocation(shaderId, "MVP");
+			for (; cit != components.end(); ++cit)
+			{
+				if ((*cit)->getComponentType() == VIDEO_COMPONENT)
+				{
+					GLuint shaderId =  dynamic_cast<CVideoComponent*>((*cit))->getShaderID();
 
-        	glUseProgram(shaderId);
+					glm::mat4 MVP = cam->getProjectionMatrix() * cam->getViewMatrix() * (*it)->getAbsoluteTransformation();
 
-			glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
+					GLuint MVPID = glGetUniformLocation(shaderId, "MVP");
 
-        	(*it)->render();
+					glUseProgram(shaderId);
+
+					glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
+					
+					dynamic_cast<CVideoComponent*>((*cit))->render();
+				}
+			}
 		}
     }
 
 }
+
+

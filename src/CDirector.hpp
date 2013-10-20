@@ -4,104 +4,14 @@
 #include <list>
 
 #include "Includes.hpp"
-#include "CReferenceCounter.hpp"
-#include "CMeshNode.hpp"
+#include "CNode.hpp"
 #include "CLoader3ds.hpp"
 #include "CVisioner.hpp"
 #include "shader.hpp"
+#include "CVideoComponent.hpp"
 
 
 typedef std::list<CNode*>	NodeList;
-
-
-typedef struct CameraStruct
-{
-	glm::mat4 ProjectionMatrix;
-	glm::mat4 ViewMatrix;
-
-	float wHeight, wWidth;
-	float viewAngle;
-
-	// Near and far visibility values
-	float nValue, fValue;
-
-	vec3 Position;
-	vec3 LookAt;
-	vec3 UpVector;
-
-	CameraStruct()
-	: wHeight(640), wWidth(480), viewAngle(45.0f), nValue(0.1f), fValue(1000.0f),
-            ProjectionMatrix(1.0), ViewMatrix(1.0),
-			Position(vec3(0,0,10)), LookAt(vec3(0,0,0)), UpVector(vec3(0,1,0))
-	{
-		updateProjectionMatrix();
-		updateViewMatrix();
-	}
-
-	void setWindowDimensions(float width, float height)
-	{
-		wWidth = width;
-		wHeight = height;
-
-		updateProjectionMatrix();
-	}
-
-	void setViewAngle(float angle)
-	{
-		viewAngle = angle;
-
-		updateProjectionMatrix();
-	}
-
-	void setNearValue(float value)
-	{
-		nValue = value;
-
-		updateProjectionMatrix();
-	}
-
-	void setFarValue(float value)
-	{
-		fValue = value;
-
-		updateProjectionMatrix();
-	}
-
-
-	void updateProjectionMatrix()
-	{
-		ProjectionMatrix = glm::perspective(viewAngle, wWidth / wHeight, nValue, fValue);
-	}
-
-	void setPosition(vec3 position)
-	{
-		Position = position;
-
-		updateViewMatrix();
-	}
-
-	void setLookAt(vec3 lookAt)
-	{
-		LookAt = lookAt;
-
-		updateViewMatrix();
-	}
-
-	void setUpVector(vec3 up)
-	{
-		UpVector = up;
-
-		updateViewMatrix();
-	}
-
-	void updateViewMatrix()
-	{
-		ViewMatrix = glm::lookAt(
-						Position,
-						LookAt,
-						UpVector );
-	}
-} SCamera;
 
 
 class CDirector : virtual public CNode
@@ -111,12 +21,6 @@ class CDirector : virtual public CNode
 		{
             printf("Creating Scene Manager\n");
 
-			m_Camera = new SCamera();
-
-			m_Camera->setWindowDimensions(1024,768);
-
-			m_Camera->setPosition(vec3(0,5,-15));
-
 			m_Visioner = new CVisioner;
 			m_Warehouser = new CWarehouser;
 		}
@@ -125,33 +29,33 @@ class CDirector : virtual public CNode
 		virtual ~CDirector()
 		{
             printf("Destroying Scene Manager\n");
+			
+			m_Visioner->drop();
+			m_Warehouser->drop();
 
-			if (m_Camera)
-			{
-				delete m_Camera;
-				m_Camera = 0;
-			}
-
-				m_Visioner->drop();
-				m_Warehouser->drop();
 		}
 
 
-		CMeshNode* addMeshSceneNode(CNode* parent = 0, vbcString name = "", CMesh* mesh = 0,
+		CNode* addMeshSceneNode(CNode* parent = 0, vbcString name = "", CMesh* mesh = 0,
 			vec3 position = vec3(0,0,0), float rotationAngle = 0.0f, vec3 rotationVector = vec3(0,1,0), vec3 scale = vec3(1,1,1))
 		{
-			CMeshNode* node;
+			CNode* node;
 
             if (parent != 0)
-                node = new CMeshNode(parent, name);
+                node = new CNode(parent, name);
             else
-                node = new CMeshNode(this, name);
+                node = new CNode(this, name);
 
 
-			node->setShaderProgramID( LoadShaders("shader.vert", "shader.frag") );
+			CVideoComponent* component = new CVideoComponent(VIDEO_COMPONENT);
 
-			node->setMesh(mesh);
+			component->setMesh(mesh);
+			component->setShaderID( LoadShaders("shader.vert", "shader.frag") );
 
+
+			node->addComponent(component);
+
+			component->drop();
 			node->drop();
 
             m_Visioner->registerNodeForRender(node);
@@ -172,26 +76,20 @@ class CDirector : virtual public CNode
 			return mesh;
 		}
 
-
-		SCamera* getCamera()
+		
+		CVisioner* getVisioner()
 		{
-			return m_Camera;
+			return m_Visioner;
 		}
 
 
-
-		void runAll()
+		CWarehouser* getWarehouser()
 		{
-            m_Visioner->setProjectionMatrix(m_Camera->ProjectionMatrix);
-            m_Visioner->setViewMatrix(m_Camera->ViewMatrix);
-
-			// render all visible graphical nodes
-            m_Visioner->renderNodes();
-
+			return m_Warehouser;
 		}
+
 
 	protected:
-		SCamera*	    m_Camera;
 		CVisioner*	    m_Visioner;
         CWarehouser*    m_Warehouser;
 };

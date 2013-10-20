@@ -1,9 +1,9 @@
 CC = g++
 INCPATH = include
-SRC =  ain.cpp CMesh.cpp CVisioner.cpp CWarehouser.cpp CMeshBuffer.cpp CLoader3ds.cpp CMeshNode.cpp CNode.cpp shader.cpp bmpread.cpp
+SRC =  main.cpp CCamera.cpp CMesh.cpp CVisioner.cpp CWarehouser.cpp CMeshBuffer.cpp CLoader3ds.cpp CNode.cpp CVideoComponent.cpp shader.cpp
 OBJS = $(patsubst %.cpp, %.o, ${SRC})
-LIBS = -lopengl32 -lglu32
-MYLIBS = -L"libs/win" -lglew32.dll -lglfw -l3ds
+LIBS = -lopengl32 -lglu32 -lgdi32
+MYLIBS = -L"libs/win" -lglew32.dll -lglfw3 -l3ds
 LDFLAGS = $(MYLIBS) $(LIBS)
 CFLAGS = -I$(INCPATH)
 

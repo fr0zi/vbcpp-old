@@ -1,41 +1,48 @@
-#include "CMeshNode.hpp"
+#include "CVideoComponent.hpp"
 
-#include "CDirector.hpp"
 
-CMeshNode::CMeshNode(CNode* parent, vbcString name, vec3 position,
-	float xRotation, float yRotation, float zRotation, vec3 scale)
-	: CNode(parent, name, position,
-		xRotation, yRotation, zRotation, scale)
+CVideoComponent::CVideoComponent(EComponentType componentType)
+: IComponent(componentType)
 {
 
 }
 
 
-CMeshNode::~CMeshNode()
+CVideoComponent::~CVideoComponent()
 {
-    m_Mesh->drop();
-
-	if( m_ShaderProgramID > 0 )
-		glDeleteProgram(m_ShaderProgramID);
+	m_Mesh->drop();
 }
 
 
-void CMeshNode::setMesh(CMesh* mesh)
+void CVideoComponent::setMesh(CMesh* mesh)
 {
 	m_Mesh = mesh;
 	m_Mesh->grab();
 }
 
 
-CMesh* CMeshNode::getMesh()
+CMesh* CVideoComponent::getMesh()
 {
 	return m_Mesh;
 }
 
-void CMeshNode::render()
+
+void CVideoComponent::setShaderID(GLuint id)
 {
-	GLuint TextureID = glGetUniformLocation(m_ShaderProgramID, "myTextureSampler");
-	GLuint AlphaValueID = glGetUniformLocation(m_ShaderProgramID, "alpha");
+	m_ShaderID = id;
+}
+
+
+GLuint CVideoComponent::getShaderID()
+{
+	return m_ShaderID;
+}
+
+
+void CVideoComponent::render()
+{
+	GLuint TextureID = glGetUniformLocation(m_ShaderID, "myTextureSampler");
+	GLuint AlphaValueID = glGetUniformLocation(m_ShaderID, "alpha");
 
 	CMeshBuffer* mb;
 
@@ -132,5 +139,4 @@ void CMeshNode::render()
 		}
 	}
 }
-
 

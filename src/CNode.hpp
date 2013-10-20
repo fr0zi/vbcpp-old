@@ -4,13 +4,15 @@
 #include <string>
 #include <list>
 
-#include <glew/glew.h>
-#include <glfw/glfw3.h>
+//#include <glew/glew.h>
+//#include <glfw/glfw3.h>
 
 #include "Includes.hpp"
 #include "CReferenceCounter.hpp"
 
 #include "CVisioner.hpp"
+
+#include "IComponent.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -113,12 +115,9 @@ class CNode : virtual public CReferenceCounter
 		//! Render node
 		virtual void render();
 
-		//! Return shader id
-        virtual GLuint getShaderProgramID();
+		virtual void addComponent(IComponent* component);
 
-		//! Set shader id for node
-        virtual void setShaderProgramID(GLuint programId);
-
+		virtual std::list<IComponent*> getComponents();
 
     protected:
         //! Pointer to parent entity
@@ -126,6 +125,8 @@ class CNode : virtual public CReferenceCounter
 
         //! Children list
         std::list<CNode*>	m_Children;
+
+		std::list<IComponent*>	m_Components;
 
         //! Entity name
         vbcString	m_Name;
@@ -153,9 +154,6 @@ class CNode : virtual public CReferenceCounter
 
 		//! Entity activity flag
         bool m_IsActive;
-
-		//! Shader program id
-		GLuint m_ShaderProgramID;
 };
 
 #endif // __CNODE_HPP__

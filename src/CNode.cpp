@@ -40,7 +40,12 @@ CNode::~CNode()
 		std::cout << "\t -- Deleting object " << m_Name << " with all its children.\n";
 	#endif
 
+	std::list<IComponent*>::iterator it = m_Components.begin();
 
+	for (; it != m_Components.end(); ++it)
+		(*it)->drop();
+
+	//m_Components.clear();
 
 	// Delete all children
 	removeAll();
@@ -259,15 +264,15 @@ void CNode::render()
 
 }
 
-GLuint CNode::getShaderProgramID()
+void CNode::addComponent(IComponent* component)
 {
-    return m_ShaderProgramID;
+	component->grab();
+	m_Components.push_back(component);
 }
 
 
-
-void CNode::setShaderProgramID(GLuint programId)
+std::list<IComponent*> CNode::getComponents()
 {
-    m_ShaderProgramID = programId;
+	return m_Components;
 }
 
