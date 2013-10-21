@@ -103,7 +103,7 @@ void CCamera::setViewAngle(GLfloat angle)
 }
 
 
-void CCamera::setWindowDimensions(float width, float height)
+void CCamera::setWindowDimensions(GLint width, GLint height)
 {
 	m_WindowWidth = width;
 	m_WindowHeight = height;
@@ -114,7 +114,7 @@ void CCamera::setWindowDimensions(float width, float height)
 
 void CCamera::updateProjection()
 {
-	m_ProjectionMatrix = glm::perspective(m_ViewAngle, float(m_WindowWidth / m_WindowHeight), m_NearValue, m_FarValue);
+	m_ProjectionMatrix = glm::perspective(m_ViewAngle, float(m_WindowWidth) / float(m_WindowHeight), m_NearValue, m_FarValue);
 }
 
 

@@ -38,7 +38,7 @@ class CCamera : virtual public CReferenceCounter
 
 		void setViewAngle(GLfloat angle);
 
-		void setWindowDimensions(float width, float height);
+		void setWindowDimensions(GLint width, GLint height);
 
 	protected:
 		glm::mat4	m_ProjectionMatrix;

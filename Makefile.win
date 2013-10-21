@@ -13,6 +13,10 @@ BINDIR = game
 
 OBJPATH = $(addprefix ${OBJDIR}/, ${OBJS})
 
+all: dirs $(BINDIR)/vbcpp.exe
+
+dirs:
+	mkdir $(OBJDIR)
 
 ${BINDIR}/vbcpp.exe: ${OBJPATH}
 	$(CC) ${OBJPATH} $(CFLAGS) -o ${BINDIR}/vbcpp.exe $(LDFLAGS)
@@ -24,6 +28,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 
 clean:
 	del ${OBJDIR}\*.o
+	rmdir ${OBJDIR}
 	del ${BINDIR}\*.exe
 	
 .PHONY: clean

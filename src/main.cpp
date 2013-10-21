@@ -18,6 +18,9 @@
 
 #include "shader.hpp"
 
+const int WINDOW_WIDTH = 1024;
+const int WINDOW_HEIGHT = 768;
+
 CDirector* director = 0;
 CNode* busNode = 0;
 CNode* node1 = 0;
@@ -138,7 +141,7 @@ GLFWwindow* createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yP
 
 	glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
-	window = glfwCreateWindow(width, height, "VBC++ Window", NULL, NULL);
+	window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
 	
 	if (!window)
 	{
@@ -194,7 +197,7 @@ int main(int argc, char* argv[])
 	
 
 	// Creating OpenGL window
-	GLFWwindow* win	= createWindow(1024, 768, 100, 100);
+	GLFWwindow* win	= createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, 100, 100);
 
 	glfwSetWindowTitle(win, "Virtual Bus Core++");
 
@@ -206,7 +209,7 @@ int main(int argc, char* argv[])
 	// Camera
 	CCamera* cam = new CCamera;
 
-	cam->setWindowDimensions(1024, 768);
+	cam->setWindowDimensions(WINDOW_WIDTH, WINDOW_HEIGHT);
 	cam->setPosition(0, 5, -15);
 
 	// Scene Manager
@@ -229,7 +232,9 @@ int main(int argc, char* argv[])
 	// Setting game state to RUN
 	EGameState = EGS_RUN;
 
-	double lastTime, oldTime = glfwGetTime();
+	double lastTime;
+	double oldTime; 
+	lastTime = oldTime = glfwGetTime();
  	int nbFrames = 0;
 
 	// Main loop
@@ -237,6 +242,7 @@ int main(int argc, char* argv[])
 	{
 		// Measure speed
 		double currentTime = glfwGetTime();
+		
 		nbFrames++;
 
 		// Compute delta time to animation
@@ -244,12 +250,12 @@ int main(int argc, char* argv[])
 		oldTime = currentTime;
 
 		readInput(win, deltaTime);
-
+		
 		if ( currentTime - lastTime >= 1.0 )
 		{ // If last window title update was more than 1 sec ago
 			// printf and reset timer
 
-			float timing = 1000.0/double(nbFrames);
+			float timing = 1.0/double(nbFrames);
 
 			nbFrames = 0;
 			lastTime += 1.0;
