@@ -8,7 +8,7 @@
 #include "CLoader3ds.hpp"
 #include "CVisioner.hpp"
 #include "shader.hpp"
-#include "CVideoComponent.hpp"
+#include "CVideoNode.hpp"
 
 
 typedef std::list<CNode*>	NodeList;
@@ -36,29 +36,22 @@ class CDirector : virtual public CNode
 		}
 
 
-		CNode* addMeshSceneNode(CNode* parent = 0, vbcString name = "", CMesh* mesh = 0,
+		CVideoNode* addMeshSceneNode(CNode* parent = 0, vbcString name = "", CMesh* mesh = 0,
 			vec3 position = vec3(0,0,0), float rotationAngle = 0.0f, vec3 rotationVector = vec3(0,1,0), vec3 scale = vec3(1,1,1))
 		{
-			CNode* node;
+			CVideoNode* node;
 
             if (parent != 0)
-                node = new CNode(parent, name);
+                node = new CVideoNode(parent, name);
             else
-                node = new CNode(this, name);
+                node = new CVideoNode(this, name);
 
+			node->setMesh(mesh);
+			node->setShaderID(LoadShaders("shader.vert", "shader.frag"));
 
-			CVideoComponent* component = new CVideoComponent(VIDEO_COMPONENT);
+			m_Visioner->registerNodeForRender(node);
 
-			component->setMesh(mesh);
-			component->setShaderID( LoadShaders("shader.vert", "shader.frag") );
-
-
-			node->addComponent(component);
-
-			component->drop();
 			node->drop();
-
-            m_Visioner->registerNodeForRender(node);
 
 			return node;
 		}

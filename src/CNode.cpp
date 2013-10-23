@@ -1,6 +1,6 @@
 #include "CNode.hpp"
 
-#include "CDirector.hpp"
+
 
 
 CNode::CNode(CNode* parent, vbcString name, vec3 position,
@@ -39,13 +39,6 @@ CNode::~CNode()
 	#ifdef DEBUG_MODE
 		std::cout << "\t -- Deleting object " << m_Name << " with all its children.\n";
 	#endif
-
-	std::list<IComponent*>::iterator it = m_Components.begin();
-
-	for (; it != m_Components.end(); ++it)
-		(*it)->drop();
-
-	//m_Components.clear();
 
 	// Delete all children
 	removeAll();
@@ -264,15 +257,4 @@ void CNode::render()
 
 }
 
-void CNode::addComponent(IComponent* component)
-{
-	component->grab();
-	m_Components.push_back(component);
-}
-
-
-std::list<IComponent*> CNode::getComponents()
-{
-	return m_Components;
-}
 

@@ -1,31 +1,23 @@
 #ifndef __CNODE_HPP__
 #define __CNODE_HPP__
 
-#include <string>
-#include <list>
-
-//#include <glew/glew.h>
-//#include <glfw/glfw3.h>
 
 #include "Includes.hpp"
 #include "CReferenceCounter.hpp"
 
-#include "CVisioner.hpp"
-
-#include "IComponent.hpp"
+#include <string>
+#include <list>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 using namespace glm;
 
-class CDirector;
 
 //! \brief Node class
 /*!
 	Node represents single element on the scene.
  */
-
 class CNode : virtual public CReferenceCounter
 {
     public:
@@ -115,9 +107,6 @@ class CNode : virtual public CReferenceCounter
 		//! Render node
 		virtual void render();
 
-		virtual void addComponent(IComponent* component);
-
-		virtual std::list<IComponent*> getComponents();
 
     protected:
         //! Pointer to parent entity
@@ -125,8 +114,6 @@ class CNode : virtual public CReferenceCounter
 
         //! Children list
         std::list<CNode*>	m_Children;
-
-		std::list<IComponent*>	m_Components;
 
         //! Entity name
         vbcString	m_Name;

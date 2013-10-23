@@ -1,6 +1,6 @@
-CC = g++
+CC = g++ -std=c++0x
 INCPATH = include
-SRC =  main.cpp CCamera.cpp CMesh.cpp CVisioner.cpp CWarehouser.cpp CMeshBuffer.cpp CLoader3ds.cpp CNode.cpp CVideoComponent.cpp shader.cpp
+SRC = main.cpp CCamera.cpp CMesh.cpp CVisioner.cpp CWarehouser.cpp CMeshBuffer.cpp CLoader3ds.cpp CNode.cpp shader.cpp
 OBJS = $(patsubst %.cpp, %.o, ${SRC})
 LIBS = -lopengl32 -lglu32 -lgdi32
 MYLIBS = -L"libs/win" -lglew32.dll -lglfw3 -l3ds
@@ -8,7 +8,7 @@ LDFLAGS = $(MYLIBS) $(LIBS)
 CFLAGS = -I$(INCPATH)
 
 SRCDIR = src
-OBJDIR = temp
+OBJDIR = tmp
 BINDIR = game
 
 OBJPATH = $(addprefix ${OBJDIR}/, ${OBJS})

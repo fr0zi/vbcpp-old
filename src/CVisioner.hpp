@@ -2,13 +2,12 @@
 #define __CVISIONER_HPP__
 
 #include "Includes.hpp"
-
 #include "CReferenceCounter.hpp"
-#include "CNode.hpp"
-#include "CVideoComponent.hpp"
 #include "CCamera.hpp"
+#include "CVideoNode.hpp"
 
-class CNode;
+#include <list>
+
 
 
 class CVisioner : virtual public CReferenceCounter
@@ -26,11 +25,12 @@ class CVisioner : virtual public CReferenceCounter
 		//! Set current shader
 		void setShaderID(GLuint id);
 
-		//! Register node for rendering process
-        void registerNodeForRender(CNode* node);
-
 		//! Render registrated nodes
         void renderNodes(CCamera* cam);
+
+		//! Register node for rendering process
+        void registerNodeForRender(CVideoNode* node);
+
 
 	protected:
 		//! Internal name
@@ -49,7 +49,7 @@ class CVisioner : virtual public CReferenceCounter
 		GLuint		m_CurrentShaderID;
 
 		//! Render list
-		std::list<CNode*>   m_RenderList;
+		std::list<CVideoNode*>   m_RenderList;
 };
 
 #endif //__CVISIONER_HPP__

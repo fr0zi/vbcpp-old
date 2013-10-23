@@ -1,45 +1,46 @@
-#include "CVideoComponent.hpp"
+#include "CVideoNode.hpp"
 
 
-CVideoComponent::CVideoComponent(EComponentType componentType)
-: IComponent(componentType)
+CVideoNode::CVideoNode(CNode* parent, vbcString name, vec3 position,
+	float xRotation, float yRotation, float zRotation, vec3 scale)
+	: CNode(parent, name, position, xRotation, yRotation, zRotation, scale)
 {
 
 }
 
 
-CVideoComponent::~CVideoComponent()
+CVideoNode::~CVideoNode()
 {
 	m_Mesh->drop();
 }
 
 
-void CVideoComponent::setMesh(CMesh* mesh)
+void CVideoNode::setMesh(CMesh* mesh)
 {
+	mesh->grab();
 	m_Mesh = mesh;
-	m_Mesh->grab();
 }
 
 
-CMesh* CVideoComponent::getMesh()
+CMesh* CVideoNode::getMesh()
 {
 	return m_Mesh;
 }
 
 
-void CVideoComponent::setShaderID(GLuint id)
+void CVideoNode::setShaderID(GLuint id)
 {
 	m_ShaderID = id;
 }
 
 
-GLuint CVideoComponent::getShaderID()
+GLuint CVideoNode::getShaderID()
 {
 	return m_ShaderID;
 }
 
 
-void CVideoComponent::render()
+void CVideoNode::render()
 {
 	GLuint TextureID = glGetUniformLocation(m_ShaderID, "myTextureSampler");
 	GLuint AlphaValueID = glGetUniformLocation(m_ShaderID, "alpha");
