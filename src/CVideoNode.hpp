@@ -5,6 +5,10 @@
 #include "CNode.hpp"
 #include "CMesh.hpp"
 
+typedef enum _ERenderPass {
+	ERP_SOLID,
+	ERP_TRANSPARENT,
+} ERenderPass;
 
 class CVideoNode : virtual public CNode
 {
@@ -26,7 +30,7 @@ class CVideoNode : virtual public CNode
 
 		GLuint getShaderID();
 
-		void render();
+		void render(ERenderPass pass);
 	
 	protected:
 		CMesh*	m_Mesh;

@@ -83,6 +83,8 @@ class CNode : virtual public CReferenceCounter
 		//! Set rotation in Z axis
         virtual void setZRotation(GLfloat angle);
 
+		virtual vec3 getRelativePosition();
+		
 		//! Get rotation in X axis
 		virtual float getXRotation();
 

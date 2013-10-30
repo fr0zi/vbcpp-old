@@ -43,10 +43,9 @@ void CVisioner::registerNodeForRender(CVideoNode* node)
 
 void CVisioner::renderNodes(CCamera* cam)
 {
-	// TODO: Add sorting function to render transparent object in proper order
-
     std::list<CVideoNode*>::iterator it = m_RenderList.begin();
 
+	// Solid pass
     for (; it != m_RenderList.end(); ++it)
     {
 		if ( (*it)->getIsActive() == true )
@@ -61,8 +60,28 @@ void CVisioner::renderNodes(CCamera* cam)
 
 			glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
 					
-			(*it)->render();
+			(*it)->render(ERP_SOLID);
+		}
+    }
+
+	// Transparent pass
+    for (it = m_RenderList.begin(); it != m_RenderList.end(); ++it)
+    {
+		if ( (*it)->getIsActive() == true )
+		{
+			GLuint shaderId =  (*it)->getShaderID();
+
+			glm::mat4 MVP = cam->getProjectionMatrix() * cam->getViewMatrix() * (*it)->getAbsoluteTransformation();
+
+			GLuint MVPID = glGetUniformLocation(shaderId, "MVP");
+
+			glUseProgram((*it)->getShaderID());
+
+			glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
+					
+			(*it)->render(ERP_TRANSPARENT);
 		}
     }
 }
+
 

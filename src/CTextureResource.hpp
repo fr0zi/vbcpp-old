@@ -1,0 +1,18 @@
+#ifndef __CTEXTURERESOURCE_HPP__
+#define __CTEXTURERESOURCE_HPP__
+
+#include "CResource.hpp"
+#include "TextureLoaders.hpp"
+
+class CTextureResource : virtual public CResource
+{
+	public:
+		CTextureResource(GLuint id = 0, vbcString filename = "");
+
+		virtual ~CTextureResource();
+
+	protected:
+		virtual void loadResource();
+};
+
+#endif // __CTEXTURERESOURCE_HPP__

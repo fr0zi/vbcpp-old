@@ -8,10 +8,19 @@
 class CResource : virtual public CReferenceCounter
 {
 	public:
-		CResource();
+		CResource(GLuint id = 0, vbcString filename = "");
+
 		virtual ~CResource();
 
-		virtual GLuint loadResource(vbcString filename) = 0;
+		virtual vbcString getFilename();
+
+		virtual GLuint getID();
+
+	protected:
+		GLuint		m_ID;
+		vbcString	m_Filename;
+
+		virtual void loadResource() = 0;
 };
 
 #endif // __CRESOURCE_HPP__

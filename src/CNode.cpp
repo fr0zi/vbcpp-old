@@ -186,6 +186,11 @@ void CNode::setZRotation(GLfloat angle)
 }
 
 
+vec3 CNode::getRelativePosition()
+{
+	return m_RelativePosition;
+}
+
 
 float CNode::getXRotation()
 {

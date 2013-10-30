@@ -15,4 +15,7 @@ void main()
 {
 	color.rgb = texture2D( myTextureSampler, UV ).rgb;
 	color.a = 1.0 - alpha;
+
+	if ( color.a == 0.0f )
+		discard;
 }

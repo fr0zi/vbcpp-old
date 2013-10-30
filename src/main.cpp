@@ -20,10 +20,13 @@
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
+const float ROT_SPEED = 20.0f;
+
 
 CDirector* director = 0;
 CNode* busNode = 0;
 CNode* node1 = 0;
+
 
 enum _EGameState {
 	EGS_RUN,
@@ -68,7 +71,7 @@ void readInput(GLFWwindow* window, double deltaTime)
 	{
 		float zRot = busNode->getZRotation();
 
-		zRot += 5.0f * deltaTime;
+		zRot += ROT_SPEED * deltaTime;
 
 		if ((zRot < -360.0f) || (zRot > 360.0f))
 			zRot = 0.0f;
@@ -81,7 +84,7 @@ void readInput(GLFWwindow* window, double deltaTime)
 	{
 		float zRot = busNode->getZRotation();
 
-		zRot -= 5.0f * deltaTime;
+		zRot -= ROT_SPEED * deltaTime;
 
 		if ((zRot < -360.0f) || (zRot > 360.0f))
 			zRot = 360.f;
@@ -93,7 +96,7 @@ void readInput(GLFWwindow* window, double deltaTime)
 	{
 		float xRot = busNode->getXRotation();
 
-		xRot += 5.0f * deltaTime;
+		xRot += ROT_SPEED * deltaTime;
 
 		if ((xRot < -360.0f) || (xRot > 360.0f))
 			xRot = 0.0f;
@@ -105,7 +108,7 @@ void readInput(GLFWwindow* window, double deltaTime)
 	{
 		float xRot = busNode->getXRotation();
 
-		xRot -= 5.0f * deltaTime;
+		xRot -= ROT_SPEED * deltaTime;
 
 		if ((xRot < -360.0f) || (xRot > 360.0f))
 			xRot = 0.0f;
@@ -177,7 +180,7 @@ GLFWwindow* createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yP
 	glEnable(GL_LIGHTING);
 	glEnable(GL_CULL_FACE);
 
-
+	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
