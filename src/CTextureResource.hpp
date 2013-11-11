@@ -7,7 +7,7 @@
 class CTextureResource : virtual public CResource
 {
 	public:
-		CTextureResource(GLuint id = 0, vbcString filename = "");
+		CTextureResource(vbcString filename = "");
 
 		virtual ~CTextureResource();
 

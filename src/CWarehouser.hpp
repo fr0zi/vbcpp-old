@@ -4,6 +4,7 @@
 #include "Includes.hpp"
 #include "CReferenceCounter.hpp"
 #include "CTextureResource.hpp"
+#include "CShaderResource.hpp"
 
 #include <list>
 #include <cstring>
@@ -17,10 +18,11 @@ class CWarehouser : virtual public CReferenceCounter
 		virtual ~CWarehouser();
 
 		GLuint loadTexture(vbcString filename);
+		GLuint loadShader(vbcString filename);
 
 	private:
 		ResourceList	m_Resources;
-		GLuint			m_CurrentResourceID;
+		//GLuint			m_CurrentResourceID;
 		vbcString		m_Name;
 };
 

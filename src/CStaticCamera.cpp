@@ -1,9 +1,9 @@
-#include "CCamera.hpp"
+#include "CStaticCamera.hpp"
 
 
-CCamera::CCamera(int width, int height, GLfloat viewAngle, GLfloat nearValue, GLfloat farValue)
+CStaticCamera::CStaticCamera(int width, int height, GLfloat viewAngle, GLfloat nearValue, GLfloat farValue)
 	: m_WindowWidth(width), m_WindowHeight(height), m_ViewAngle(viewAngle), m_NearValue(nearValue), m_FarValue(farValue),
-	m_Position(vec3(0,0,10)), m_LookAt(vec3(0,0,0)), m_UpVector(vec3(0,1,0)),
+	m_Position(vec3(0,0,-10)), m_LookAt(vec3(0,0,0)), m_UpVector(vec3(0,1,0)),
 	m_ProjectionMatrix(1.0), m_ViewMatrix(1.0)
 {
 	updateProjection();
@@ -11,43 +11,43 @@ CCamera::CCamera(int width, int height, GLfloat viewAngle, GLfloat nearValue, GL
 }
 
 
-CCamera::~CCamera()
+CStaticCamera::~CStaticCamera()
 {
 
 }
 
 
-vec3 CCamera::getPosition()
+vec3 CStaticCamera::getPosition()
 {
 	return m_Position;
 }
 
 
-GLfloat CCamera::getNearValue()
+GLfloat CStaticCamera::getNearValue()
 {
 	return m_NearValue;
 }
 
 
-GLfloat	CCamera::getFarValue()
+GLfloat	CStaticCamera::getFarValue()
 {
 	return m_FarValue;
 }
 
 
-glm::mat4 CCamera::getProjectionMatrix()
+glm::mat4 CStaticCamera::getProjectionMatrix()
 {
 	return m_ProjectionMatrix;
 }
 
 
-glm::mat4 CCamera::getViewMatrix()
+glm::mat4 CStaticCamera::getViewMatrix()
 {
 	return m_ViewMatrix;
 }
 
 
-void CCamera::setPosition(vec3 position)
+void CStaticCamera::setPosition(vec3 position)
 {
 	m_Position = position;
 
@@ -55,7 +55,7 @@ void CCamera::setPosition(vec3 position)
 }
 
 
-void CCamera::setPosition(GLfloat x, GLfloat y, GLfloat z)
+void CStaticCamera::setPosition(GLfloat x, GLfloat y, GLfloat z)
 {
 	vec3 pos(x, y, z);
 
@@ -63,7 +63,7 @@ void CCamera::setPosition(GLfloat x, GLfloat y, GLfloat z)
 }
 
 
-void CCamera::lookAt(vec3 lookAt)
+void CStaticCamera::lookAt(vec3 lookAt)
 {
 	m_LookAt = lookAt;
 
@@ -71,7 +71,7 @@ void CCamera::lookAt(vec3 lookAt)
 }
 
 
-void CCamera::setUpVector(vec3 upVector)
+void CStaticCamera::setUpVector(vec3 upVector)
 {
 	m_UpVector = upVector;
 	
@@ -79,7 +79,7 @@ void CCamera::setUpVector(vec3 upVector)
 }
 
 
-void CCamera::setFarValue(GLfloat value)
+void CStaticCamera::setFarValue(GLfloat value)
 {
 	m_FarValue = value;
 
@@ -87,7 +87,7 @@ void CCamera::setFarValue(GLfloat value)
 }
 
 
-void CCamera::setNearValue(GLfloat value)
+void CStaticCamera::setNearValue(GLfloat value)
 {
 	m_NearValue = value;
 
@@ -95,7 +95,7 @@ void CCamera::setNearValue(GLfloat value)
 }
 
 
-void CCamera::setViewAngle(GLfloat angle)
+void CStaticCamera::setViewAngle(GLfloat angle)
 {
 	m_ViewAngle = angle;
 
@@ -103,7 +103,7 @@ void CCamera::setViewAngle(GLfloat angle)
 }
 
 
-void CCamera::setWindowDimensions(GLint width, GLint height)
+void CStaticCamera::setWindowDimensions(GLint width, GLint height)
 {
 	m_WindowWidth = width;
 	m_WindowHeight = height;
@@ -112,13 +112,13 @@ void CCamera::setWindowDimensions(GLint width, GLint height)
 }
 
 
-void CCamera::updateProjection()
+void CStaticCamera::updateProjection()
 {
 	m_ProjectionMatrix = glm::perspective(m_ViewAngle, float(m_WindowWidth) / float(m_WindowHeight), m_NearValue, m_FarValue);
 }
 
 
-void CCamera::updateView()
+void CStaticCamera::updateView()
 {
 	m_ViewMatrix = glm::lookAt(
 						m_Position,

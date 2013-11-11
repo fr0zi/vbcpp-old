@@ -1,5 +1,5 @@
-#ifndef __CCAMERA_HPP__
-#define __CCAMERA_HPP__
+#ifndef __CSTATICCAMERA_HPP__
+#define __CSTATICCAMERA_HPP__
 
 #include "Includes.hpp"
 #include "CReferenceCounter.hpp"
@@ -7,12 +7,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-class CCamera : virtual public CReferenceCounter
+class CStaticCamera : virtual public CReferenceCounter
 {
 	public:
-		CCamera(int width = 800, int height = 600, GLfloat viewAngle = 45.0f, GLfloat nearValue = 0.1f, GLfloat farValue = 1000.0f);
+		CStaticCamera(int width = 800, int height = 600, GLfloat viewAngle = 45.0f, GLfloat nearValue = 0.1f, GLfloat farValue = 1000.0f);
 
-		virtual ~CCamera();
+		virtual ~CStaticCamera();
 
 		vec3 getPosition();
 
@@ -57,4 +57,4 @@ class CCamera : virtual public CReferenceCounter
 		void updateView();
 };
 
-#endif // __CCAMERA_HPP__
+#endif // __CSTATICCAMERA_HPP__

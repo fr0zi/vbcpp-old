@@ -1,7 +1,7 @@
 #include "CResource.hpp"
 
-CResource::CResource(GLuint id, vbcString filename)
-: m_ID(id), m_Filename(filename)
+CResource::CResource(vbcString filename)
+: m_Filename(filename)
 {
 
 }

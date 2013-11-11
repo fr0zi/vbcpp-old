@@ -41,7 +41,7 @@ void CVisioner::registerNodeForRender(CVideoNode* node)
 }
 
 
-void CVisioner::renderNodes(CCamera* cam)
+void CVisioner::renderNodes(CStaticCamera* cam)
 {
     std::list<CVideoNode*>::iterator it = m_RenderList.begin();
 

@@ -7,7 +7,6 @@
 #include "CNode.hpp"
 #include "CLoader3ds.hpp"
 #include "CVisioner.hpp"
-#include "shader.hpp"
 #include "CVideoNode.hpp"
 
 
@@ -47,7 +46,7 @@ class CDirector : virtual public CNode
                 node = new CVideoNode(this, name);
 
 			node->setMesh(mesh);
-			node->setShaderID(LoadShaders("shader.vert", "shader.frag"));
+			node->setShaderID(m_Warehouser->loadShader("bus.shader"));
 
 			m_Visioner->registerNodeForRender(node);
 

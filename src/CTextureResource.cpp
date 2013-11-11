@@ -1,9 +1,9 @@
 #include "CTextureResource.hpp"
 
-CTextureResource::CTextureResource(GLuint id, vbcString filename)
-: CResource(id, filename)
+CTextureResource::CTextureResource(vbcString filename)
+: CResource(filename)
 {
-	printf("Creating texture resource...\n");
+	printf("Creating texture resource: %s\n", m_Filename.c_str());
 
 	loadResource();
 }

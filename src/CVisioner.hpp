@@ -3,7 +3,7 @@
 
 #include "Includes.hpp"
 #include "CReferenceCounter.hpp"
-#include "CCamera.hpp"
+#include "CStaticCamera.hpp"
 #include "CVideoNode.hpp"
 
 #include <list>
@@ -26,7 +26,7 @@ class CVisioner : virtual public CReferenceCounter
 		void setShaderID(GLuint id);
 
 		//! Render registrated nodes
-        void renderNodes(CCamera* cam);
+        void renderNodes(CStaticCamera* cam);
 
 		//! Register node for rendering process
         void registerNodeForRender(CVideoNode* node);

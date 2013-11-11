@@ -8,7 +8,7 @@
 class CResource : virtual public CReferenceCounter
 {
 	public:
-		CResource(GLuint id = 0, vbcString filename = "");
+		CResource(vbcString filename = "");
 
 		virtual ~CResource();
 

@@ -1,7 +1,7 @@
 #include "CWarehouser.hpp"
 
 
-CWarehouser::CWarehouser(vbcString name) : m_Name(name), m_CurrentResourceID(1)
+CWarehouser::CWarehouser(vbcString name) : m_Name(name)
 {
 	#ifdef DEBUG_MODE
 		std::cout << "\t -- Creating object " << m_Name << std::endl;
@@ -32,18 +32,45 @@ GLuint CWarehouser::loadTexture(vbcString filename)
 	{
 		if ( (*it)->getFilename() == filename )
 		{
-			printf("Resources exists! Returning id.\n");
+			printf("Texture resource exists! Returning id: %d\n", (*it)->getID());
 
 			return (*it)->getID();
 		}
 	}
 
-	printf("Resources doesn't exist. Creating new resource.\n");
 
-	CTextureResource* resource = new CTextureResource(m_CurrentResourceID, filename);
-	m_CurrentResourceID++;
+
+	CTextureResource* resource = new CTextureResource(filename);
+	//m_CurrentResourceID++;
 	m_Resources.push_back(resource);
+
+	printf("Texture resource doesn't exist. Creating new resource [%d].\n", resource->getID());
 	
 	return resource->getID();
 }
 
+
+GLuint CWarehouser::loadShader(vbcString filename)
+{
+	ResourceList::iterator it = m_Resources.begin();
+
+	for (; it != m_Resources.end(); ++it)
+	{
+		if ( (*it)->getFilename() == filename )
+		{
+			printf("Shader resource exists! Returning id: %d\n", (*it)->getID());
+
+			return (*it)->getID();
+		}
+	}
+
+	
+
+	CShaderResource* resource = new CShaderResource(filename);
+	//m_CurrentResourceID++;
+	m_Resources.push_back(resource);
+
+	printf("Shader resource doesn't exist. Creating new resource [%d].\n", resource->getID());
+
+	return resource->getID();
+}

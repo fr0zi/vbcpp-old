@@ -14,9 +14,10 @@
 #include "CDirector.hpp"
 #include "CWarehouser.hpp"
 #include "CVisioner.hpp"
-#include "CCamera.hpp"
+#include "CStaticCamera.hpp"
+#include "CCameraFPS.hpp"
 
-#include "shader.hpp"
+//#include "shader.hpp"
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
@@ -25,8 +26,7 @@ const float ROT_SPEED = 20.0f;
 
 CDirector* director = 0;
 CNode* busNode = 0;
-CNode* node1 = 0;
-
+CCameraFPS* camFPS = 0;
 
 enum _EGameState {
 	EGS_RUN,
@@ -47,73 +47,35 @@ static void keyboard_callback(GLFWwindow* window, int key, int scancode, int act
 			glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 
-	if (key == GLFW_KEY_A && action == GLFW_PRESS )
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS )
 	{
 		bool state = busNode->getIsActive();
 
 		busNode->setIsActive(!state);
 	}
-
-	if (key == GLFW_KEY_S && action == GLFW_PRESS )
-	{
-		bool state = node1->getIsActive();
-
-		node1->setIsActive(!state);
-	}
 }
 
 
 void readInput(GLFWwindow* window, double deltaTime)
-{
-
-
-	if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS)
+{	
+	if (glfwGetKey( window, GLFW_KEY_W ) == GLFW_PRESS)
 	{
-		float zRot = busNode->getZRotation();
-
-		zRot += ROT_SPEED * deltaTime;
-
-		if ((zRot < -360.0f) || (zRot > 360.0f))
-			zRot = 0.0f;
-
-		busNode->setZRotation( zRot );
-
+		camFPS->moveForward(deltaTime);
 	}
 
-	if (glfwGetKey( window, GLFW_KEY_RIGHT ) == GLFW_PRESS)
+	if (glfwGetKey( window, GLFW_KEY_S ) == GLFW_PRESS)
 	{
-		float zRot = busNode->getZRotation();
-
-		zRot -= ROT_SPEED * deltaTime;
-
-		if ((zRot < -360.0f) || (zRot > 360.0f))
-			zRot = 360.f;
-
-		busNode->setZRotation( zRot );
+		camFPS->moveBackward(deltaTime);
 	}
 
-	if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS)
+	if (glfwGetKey( window, GLFW_KEY_D ) == GLFW_PRESS)
 	{
-		float xRot = busNode->getXRotation();
-
-		xRot += ROT_SPEED * deltaTime;
-
-		if ((xRot < -360.0f) || (xRot > 360.0f))
-			xRot = 0.0f;
-
-		busNode->setXRotation( xRot );
+		camFPS->strafeRight(deltaTime);
 	}
 
-	if (glfwGetKey( window, GLFW_KEY_DOWN ) == GLFW_PRESS)
+	if (glfwGetKey( window, GLFW_KEY_A ) == GLFW_PRESS)
 	{
-		float xRot = busNode->getXRotation();
-
-		xRot -= ROT_SPEED * deltaTime;
-
-		if ((xRot < -360.0f) || (xRot > 360.0f))
-			xRot = 0.0f;
-
-		busNode->setXRotation( xRot );
+		camFPS->strafeLeft(deltaTime);	
 	}
 }
 
@@ -181,8 +143,9 @@ GLFWwindow* createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yP
 	glEnable(GL_CULL_FACE);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_LESS);
+
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	return window;
@@ -206,14 +169,19 @@ int main(int argc, char* argv[])
 
 	glfwSetKeyCallback(win, keyboard_callback);
 
+	GLuint VertexArrayID;
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
+
 
 	// CREATING OBJECTS
 
 	// Camera
-	CCamera* cam = new CCamera;
+	camFPS = new CCameraFPS;
+	camFPS->setMoveSpeed(15.0f);
 
-	cam->setWindowDimensions(WINDOW_WIDTH, WINDOW_HEIGHT);
-	cam->setPosition(0, 5, -15);
+	camFPS->setWindowDimensions(WINDOW_WIDTH, WINDOW_HEIGHT);
+	camFPS->setPosition(0, 0, 15);
 
 	// Scene Manager
 	director = new CDirector("Director");
@@ -224,12 +192,7 @@ int main(int argc, char* argv[])
     busNode = director->addMeshSceneNode(0, "Bus", busMesh);
 	busNode->setXRotation(-90.0f);
 
-	busNode->setPosition(vec3(-1,0,0));
-
-	node1 = director->addMeshSceneNode(busNode, "Foo2", busMesh);
-	node1->setXRotation(90.0f);
-	
-	node1->setPosition(vec3(3,3,0));
+	busNode->setPosition(vec3(0,0,0));
 
 
 	// Setting game state to RUN
@@ -253,12 +216,19 @@ int main(int argc, char* argv[])
 		oldTime = currentTime;
 
 		readInput(win, deltaTime);
-		
+		double xpos, ypos;
+
+		glfwGetCursorPos(win, &xpos, &ypos);
+
+		glfwSetCursorPos( win, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);		
+
+		camFPS->update(xpos, ypos);
+
 		if ( currentTime - lastTime >= 1.0 )
 		{ // If last window title update was more than 1 sec ago
 			// printf and reset timer
 
-			float timing = 1.0/double(nbFrames);
+			float timing = double(nbFrames);
 
 			nbFrames = 0;
 			lastTime += 1.0;
@@ -279,7 +249,7 @@ int main(int argc, char* argv[])
 		glClearColor(0.7, 0.7, 0.9, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			director->getVisioner()->renderNodes(cam);
+			director->getVisioner()->renderNodes(camFPS);
 
 		glfwSwapBuffers(win);
 		glfwPollEvents();
@@ -289,7 +259,10 @@ int main(int argc, char* argv[])
 	director->drop();
 
 	// Dropping camera
-	cam->drop();
+	camFPS->drop();
+
+	glDeleteVertexArrays(1, &VertexArrayID);
+	glfwTerminate();
 
 	return 0;
 }
