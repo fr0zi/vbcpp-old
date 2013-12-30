@@ -5,10 +5,9 @@
 This project uses following libraries for running:
 
 - OpenGL 3.3 Core (graphics library for scene rendering, working on Linux and Windows)
-- GLFW (creating OpenGL window, handling input / output events)
-- SOIL (reading textures from graphics files)
+- GLFW3 (creating OpenGL window, handling input / output events)
 - Bullet Physics (physics and collisions)
-- OpenAL or Audiere (sounds and audio effects)
+- FMOD (sounds and audio effects)
 
 ### Compiling
 
