@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="VirtualBus C++" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug - Win">
+				<Option platforms="Windows;" />
+				<Option output="game/vbcpp_debug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="game" />
+				<Option object_output="tmp/obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add library="glew32" />
+					<Add library="glfw3" />
+					<Add library="3ds" />
+					<Add library="opengl32" />
+					<Add library="glu32" />
+					<Add library="gdi32" />
+					<Add directory="libs/win" />
+				</Linker>
+			</Target>
+			<Target title="Release - Win">
+				<Option platforms="Windows;" />
+				<Option output="game/vbcpp" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="game" />
+				<Option object_output="tmp/obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="Debug - Linux">
+				<Option platforms="Unix;" />
+				<Option output="game/vbcpp_debug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="game" />
+				<Option object_output="tmp/obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add library="GL" />
+					<Add library="GLU" />
+					<Add library="Xrandr" />
+					<Add library="rt" />
+					<Add library="Xxf86vm" />
+					<Add library="Xi" />
+					<Add library="GLEW" />
+					<Add library="glfw3" />
+					<Add library="3ds" />
+					<Add directory="libs/linux" />
+				</Linker>
+			</Target>
+			<Target title="Release - Linux">
+				<Option platforms="Unix;" />
+				<Option output="game/vbcpp" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="game" />
+				<Option object_output="tmp/obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="GL" />
+					<Add library="GLU" />
+					<Add library="Xrandr" />
+					<Add library="rt" />
+					<Add library="Xxf86vm" />
+					<Add library="Xi" />
+					<Add library="GLEW" />
+					<Add library="glfw3" />
+					<Add library="3ds" />
+					<Add directory="libs/linux" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="src/CCameraFPS.cpp" />
+		<Unit filename="src/CCameraFPS.hpp" />
+		<Unit filename="src/CDirector.hpp" />
+		<Unit filename="src/CLoader3ds.cpp" />
+		<Unit filename="src/CLoader3ds.hpp" />
+		<Unit filename="src/CMesh.cpp" />
+		<Unit filename="src/CMesh.hpp" />
+		<Unit filename="src/CMeshBuffer.cpp" />
+		<Unit filename="src/CMeshBuffer.hpp" />
+		<Unit filename="src/CMeshNode.cpp" />
+		<Unit filename="src/CMeshNode.hpp" />
+		<Unit filename="src/CNode.cpp" />
+		<Unit filename="src/CNode.hpp" />
+		<Unit filename="src/CReferenceCounter.hpp" />
+		<Unit filename="src/CResource.cpp" />
+		<Unit filename="src/CResource.hpp" />
+		<Unit filename="src/CShaderResource.cpp" />
+		<Unit filename="src/CShaderResource.hpp" />
+		<Unit filename="src/CStaticCamera.cpp" />
+		<Unit filename="src/CStaticCamera.hpp" />
+		<Unit filename="src/CTextureResource.cpp" />
+		<Unit filename="src/CTextureResource.hpp" />
+		<Unit filename="src/CVisioner.cpp" />
+		<Unit filename="src/CVisioner.hpp" />
+		<Unit filename="src/CWarehouser.cpp" />
+		<Unit filename="src/CWarehouser.hpp" />
+		<Unit filename="src/Includes.hpp" />
+		<Unit filename="src/LoaderBMP.cpp" />
+		<Unit filename="src/LoaderBMP.hpp" />
+		<Unit filename="src/S3DVertex.hpp" />
+		<Unit filename="src/SMaterial.hpp" />
+		<Unit filename="src/TextureLoaders.cpp" />
+		<Unit filename="src/TextureLoaders.hpp" />
+		<Unit filename="src/main.cpp" />
+		<Unit filename="src/vbTransform.cpp" />
+		<Unit filename="src/vbTransform.hpp" />
+		<Extensions>
+			<DoxyBlocks>
+				<comment_style block="3" line="3" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
