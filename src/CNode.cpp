@@ -3,15 +3,8 @@
 
 
 
-CNode::CNode(CNode* parent, vbcString name, vec3 position,
-	float xRotation, float yRotation, float zRotation, vec3 scale)
-	: m_Parent(parent), m_Name(name),
-		m_RelativePosition(position),
-		m_XRotationAngle(xRotation),
-		m_YRotationAngle(yRotation),
-		m_ZRotationAngle(zRotation),
-		m_RelativeScale(scale),
-		m_IsActive(true)
+CNode::CNode(CNode* parent, vbcString name)
+	: m_Parent(parent), m_Name(name), m_IsActive(true)
 {
 
 	/* This line was couse of error - Segmentation Fault
@@ -21,14 +14,10 @@ CNode::CNode(CNode* parent, vbcString name, vec3 position,
 	m_Parent = parent;
 
 	if( parent )
-	{
 		parent->addChild(this);
-	}
-
-	updateAbsoluteTransformation();
 
 	#ifdef DEBUG_MODE
-		std::cout << "\t -- Creating object " << m_Name << std::endl;
+	std::cout << "\t -- Creating object " << m_Name << std::endl;
 	#endif
 }
 
@@ -37,10 +26,10 @@ CNode::CNode(CNode* parent, vbcString name, vec3 position,
 CNode::~CNode()
 {
 	#ifdef DEBUG_MODE
-		std::cout << "\t -- Deleting object " << m_Name << " with all its children.\n";
+	std::cout << "\t -- Deleting object " << m_Name << " with all its children.\n";
 	#endif
 
-	// Delete all children
+    // Delete all children
 	removeAll();
 }
 
@@ -58,7 +47,7 @@ void CNode::addChild(CNode* child)
 
 	child->setIsActive(m_IsActive);
 
-	//std::cout << "Adding child: " << child->getName() << std::endl;
+
 }
 
 
@@ -74,16 +63,6 @@ vbcString CNode::getName() const
 {
 	return m_Name;
 }
-
-
-
-mat4 CNode::getAbsoluteTransformation()
-{
-    updateAbsoluteTransformation();
-
-    return m_AbsoluteTransformation;
-}
-
 
 
 void CNode::remove()
@@ -136,114 +115,34 @@ void CNode::setParent(CNode* parent)
 
 	m_Parent = parent;
 
-	if( m_Parent )
+
+	if( parent )
+	{
 		m_Parent->addChild(this);
 
+		m_IsActive = m_Parent->getIsActive();
+	}
+
 	drop();
-
-	m_IsActive = m_Parent->getIsActive();
-
-	updateAbsoluteTransformation();
 }
 
 
-
-void CNode::setPosition(vec3 position)
+CNode* CNode::getParent()
 {
-	m_RelativePosition = position;
-
-	updateAbsoluteTransformation();
+	return m_Parent;
 }
 
 
-
-void CNode::setXRotation(GLfloat angle)
+bool CNode::hasParent()
 {
-    m_RelativeRotation = vec3(1,0,0);
-    m_XRotationAngle = angle;
-
-    updateAbsoluteTransformation();
+	return static_cast<bool>(m_Parent);
 }
-
-
-
-void CNode::setYRotation(GLfloat angle)
-{
-    m_RelativeRotation = vec3(0,1,0);
-    m_YRotationAngle = angle;
-
-    updateAbsoluteTransformation();
-}
-
-
-
-void CNode::setZRotation(GLfloat angle)
-{
-    m_RelativeRotation = vec3(0,0,1);
-    m_ZRotationAngle = angle;
-
-    updateAbsoluteTransformation();
-}
-
-
-vec3 CNode::getRelativePosition()
-{
-	return m_RelativePosition;
-}
-
-
-float CNode::getXRotation()
-{
-	return m_XRotationAngle;
-}
-
-
-
-float CNode::getYRotation()
-{
-	return m_YRotationAngle;
-}
-
-
-
-float CNode::getZRotation()
-{
-	return m_ZRotationAngle;
-}
-
-
-
-void CNode::setScale(vec3 scale)
-{
-	m_RelativeScale = scale;
-
-	updateAbsoluteTransformation();
-}
-
-
-
-void CNode::updateAbsoluteTransformation()
-{
-    mat4 position = glm::translate(m_RelativePosition);
-    mat4 rotation = glm::rotate(m_XRotationAngle, vec3(1,0,0));
-    rotation *= glm::rotate(m_YRotationAngle, vec3(0,1,0));
-    rotation *= glm::rotate(m_ZRotationAngle, vec3(0,0,1));
-    mat4 scale = glm::scale(m_RelativeScale);
-
-    m_AbsoluteTransformation = position * rotation * scale;
-
-    // if Entity has parent - multiply matrices to get actual Entity transformation relative to parent
-    if (m_Parent)
-    m_AbsoluteTransformation = m_Parent->getAbsoluteTransformation() * m_AbsoluteTransformation;
-}
-
 
 
 bool CNode::getIsActive() const
 {
     return m_IsActive;
 }
-
 
 
 void CNode::setIsActive(bool state)
@@ -260,6 +159,18 @@ void CNode::setIsActive(bool state)
 void CNode::render()
 {
 
+}
+
+
+void CNode::setTransform(vbTransform transform)
+{
+	m_Transform = transform;
+}
+
+
+vbTransform CNode::getTransform()
+{
+	return m_Transform;
 }
 
 

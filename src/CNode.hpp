@@ -4,14 +4,10 @@
 
 #include "Includes.hpp"
 #include "CReferenceCounter.hpp"
+#include "vbTransform.hpp"
 
 #include <string>
 #include <list>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-using namespace glm;
 
 
 //! \brief Node class
@@ -26,19 +22,8 @@ class CNode : virtual public CReferenceCounter
 		/*!
 			\param parent Parent node
 			\param name Node name
-			\param position Node position on the scene
-			\param xRotation Node rotation in X axis
-			\param yRotation Node rotation in Y axis
-			\param zRotation Node rotation in Z axis
-			\param scale Node scale
 		*/
-		CNode(CNode* parent = 0, vbcString name = "Node",
-			vec3 position = vec3(0,0,0),
-			float xRotation = 0.0f,
-			float yRotation = 0.0f,
-			float zRotation = 0.0f,
-			vec3 scale = vec3(1,1,1)
-		);
+		CNode(CNode* parent = 0, vbcString name = "Node");
 
         //! DESTRUCTOR
 		virtual ~CNode();
@@ -51,9 +36,6 @@ class CNode : virtual public CReferenceCounter
 
         //! Get node's name
         virtual vbcString getName() const;
-
-		//! Get absolute transformation matrix
-        virtual mat4 getAbsoluteTransformation();
 
 		//! Remove node from parent node
 		/*!
@@ -71,34 +53,11 @@ class CNode : virtual public CReferenceCounter
         //! Set parent node
         virtual void setParent(CNode* parent);
 
-		//! Set position
-        virtual void setPosition(vec3 position);
+		//! Get parent node
+		virtual CNode* getParent();
 
-		//! Set rotation in X axis
-        virtual void setXRotation(GLfloat angle);
-
-		//! Set rotation in Y axis
-        virtual void setYRotation(GLfloat angle);
-
-		//! Set rotation in Z axis
-        virtual void setZRotation(GLfloat angle);
-
-		virtual vec3 getRelativePosition();
-		
-		//! Get rotation in X axis
-		virtual float getXRotation();
-
-		//! Get rotation in Y axis
-		virtual float getYRotation();
-
-		//! Get rotation in Z axis
-		virtual float getZRotation();
-
-		//! Set scale
-        virtual void setScale(vec3 scale);
-
-		//! Set absolute transformation
-        virtual void updateAbsoluteTransformation();
+        //! If the node has parent
+        virtual bool hasParent();
 
 		//! Get activity flag
 		virtual bool getIsActive() const;
@@ -109,6 +68,12 @@ class CNode : virtual public CReferenceCounter
 		//! Render node
 		virtual void render();
 
+        //! Set node transform
+        virtual void setTransform(vbTransform transform);
+
+        //! Get node transform
+		virtual vbTransform getTransform();
+
 
     protected:
         //! Pointer to parent entity
@@ -117,32 +82,14 @@ class CNode : virtual public CReferenceCounter
         //! Children list
         std::list<CNode*>	m_Children;
 
-        //! Entity name
+        //! Node name
         vbcString	m_Name;
 
-		//! Transformation matrix
-		mat4 m_AbsoluteTransformation;
-
-		//! Position vector
-        vec3 m_RelativePosition;
-
-		//! Rotation vector
-        vec3 m_RelativeRotation;
-
-        //! X Rotation angle
-        GLfloat m_XRotationAngle;
-
-        //! Y Rotation angle
-        GLfloat m_YRotationAngle;
-
-        //! Z Rotation angle
-        GLfloat m_ZRotationAngle;
-
-		//! Scale vector
-        vec3 m_RelativeScale;
-
-		//! Entity activity flag
+        //! Is node active
         bool m_IsActive;
+
+        //! Node transform
+        vbTransform	m_Transform;
 };
 
 #endif // __CNODE_HPP__

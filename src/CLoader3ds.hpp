@@ -5,7 +5,6 @@
 #include <lib3ds/material.h>
 #include <lib3ds/mesh.h>
 
-#include <soil/SOIL.h>
 #include <cstring>
 
 #include "Includes.hpp"
@@ -25,7 +24,7 @@ class CLoader3ds
 
 		SMaterial loadMaterialData(Lib3dsMaterial* material, vbcString texPath);
 
-		S3DVertex* loadGeometryByMaterial(SMaterial& material, unsigned int& quantumOfVertices, bool& isValid);
+        S3DVertex* loadGeometryByMaterial(SMaterial& material, unsigned int& quantumOfVertices);
 
 		CWarehouser* m_Warehouser;
 		Lib3dsFile* m_File3ds;

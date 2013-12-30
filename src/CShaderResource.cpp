@@ -3,14 +3,18 @@
 CShaderResource::CShaderResource(vbcString filename)
 : CResource(filename)
 {
+	#ifdef DEBUG_MODE
 	printf("Creating shader resource: %s\n", m_Filename.c_str());
+	#endif
 
 	loadResource();
 }
 
 CShaderResource::~CShaderResource()
 {
+	#ifdef DEBUG_MODE
 	printf("Destroying shader resource: %s\n", m_Filename.c_str());
+	#endif
 
 	glDeleteProgram(m_ID);
 }
@@ -34,7 +38,7 @@ void CShaderResource::loadResource()
 	// Check the program
 	glGetProgramiv(m_ID, GL_LINK_STATUS, &Result);
 	glGetProgramiv(m_ID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	std::vector<char> ProgramErrorMessage( max(InfoLogLength, int(1)) );
+	std::vector<char> ProgramErrorMessage( std::max(InfoLogLength, int(1)) );
 	glGetProgramInfoLog(m_ID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
 	fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
 

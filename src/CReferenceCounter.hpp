@@ -1,9 +1,8 @@
 #ifndef __CREFCOUNTER_HPP__
 #define __CREFCOUNTER_HPP__
 
-#include <stdio.h>
+#include "Includes.hpp"
 
-#define DEBUG_MODE
 
 //! \brief Reference Counter class
 /*!
@@ -19,7 +18,7 @@ class CReferenceCounter
 		CReferenceCounter() : _refCounter(1)
 		{
 		    #ifdef DEBUG_MODE
-                fprintf(stdout, "Creating Reference Counted object\n");
+               fprintf(stdout, "Creating Reference Counted object\n");
             #endif
 		}
 
@@ -27,7 +26,7 @@ class CReferenceCounter
 		virtual ~CReferenceCounter()
 		{
 		    #ifdef DEBUG_MODE
-                fprintf(stdout, "Destroying Reference Counted object\n");
+               fprintf(stdout, "Destroying Reference Counted object\n");
             #endif
 		}
 

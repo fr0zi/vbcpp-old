@@ -2,7 +2,9 @@
 
 GLuint loadTextureDDS(vbcString filename)
 {
+	#ifdef DEBUG_MODE
 	printf("Reading image: %s\n", filename.c_str());
+	#endif
 
 	unsigned char header[124];
 
@@ -89,7 +91,9 @@ GLuint loadTextureDDS(vbcString filename)
 
 GLuint loadTextureBMP(vbcString filename)
 {
+	#ifdef DEBUG_MODE
 	printf("Reading image: %s\n", filename.c_str());
+	#endif
 
 	// Data read from the header of the BMP file
 	unsigned char header[54];
@@ -170,7 +174,9 @@ GLuint loadTextureBMP(vbcString filename)
 
 GLuint loadTextureTGA(vbcString filename)
 {
+	#ifdef DEBUG_MODE
 	printf("Reading image: %s\n", filename.c_str());
+	#endif
 
 	// Create one OpenGL texture
 	GLuint textureID;

@@ -20,6 +20,10 @@ class CStaticCamera : virtual public CReferenceCounter
 
 		GLfloat	getFarValue();
 
+		glm::vec3 getLookAtVector();
+
+		glm::vec3 getUpVector();
+
 		glm::mat4 getProjectionMatrix();
 
 		glm::mat4 getViewMatrix();

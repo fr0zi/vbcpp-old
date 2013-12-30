@@ -32,7 +32,9 @@ GLuint CWarehouser::loadTexture(vbcString filename)
 	{
 		if ( (*it)->getFilename() == filename )
 		{
+			#ifdef DEBUG_MODE
 			printf("Texture resource exists! Returning id: %d\n", (*it)->getID());
+			#endif
 
 			return (*it)->getID();
 		}
@@ -44,7 +46,9 @@ GLuint CWarehouser::loadTexture(vbcString filename)
 	//m_CurrentResourceID++;
 	m_Resources.push_back(resource);
 
+	#ifdef DEBUG_MODE
 	printf("Texture resource doesn't exist. Creating new resource [%d].\n", resource->getID());
+	#endif
 	
 	return resource->getID();
 }
@@ -58,7 +62,9 @@ GLuint CWarehouser::loadShader(vbcString filename)
 	{
 		if ( (*it)->getFilename() == filename )
 		{
+			#ifdef DEBUG_MODE
 			printf("Shader resource exists! Returning id: %d\n", (*it)->getID());
+			#endif
 
 			return (*it)->getID();
 		}
@@ -70,7 +76,9 @@ GLuint CWarehouser::loadShader(vbcString filename)
 	//m_CurrentResourceID++;
 	m_Resources.push_back(resource);
 
+	#ifdef DEBUG_MODE
 	printf("Shader resource doesn't exist. Creating new resource [%d].\n", resource->getID());
+	#endif
 
 	return resource->getID();
 }

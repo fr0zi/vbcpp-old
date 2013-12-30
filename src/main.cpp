@@ -5,19 +5,12 @@
 #include <sstream>
 #include <iostream>
 
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-
 #include "Includes.hpp"
 #include "CDirector.hpp"
 #include "CWarehouser.hpp"
 #include "CVisioner.hpp"
 #include "CStaticCamera.hpp"
 #include "CCameraFPS.hpp"
-
-//#include "shader.hpp"
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
@@ -26,6 +19,7 @@ const float ROT_SPEED = 20.0f;
 
 CDirector* director = 0;
 CNode* busNode = 0;
+CNode* node1 = 0;
 CCameraFPS* camFPS = 0;
 
 enum _EGameState {
@@ -49,9 +43,22 @@ static void keyboard_callback(GLFWwindow* window, int key, int scancode, int act
 
 	if (key == GLFW_KEY_1 && action == GLFW_PRESS )
 	{
-		bool state = busNode->getIsActive();
+		//bool state = busNode->getIsActive();
 
-		busNode->setIsActive(!state);
+		//busNode->setIsActive(!state);
+
+        if (node1)
+            node1->setParent(busNode);
+	}
+
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS )
+	{
+		//bool state = node1->getIsActive();
+
+		//node1->setIsActive(!state);
+
+        if (node1)
+		    node1->setParent(director);
 	}
 }
 
@@ -190,10 +197,18 @@ int main(int argc, char* argv[])
 	CMesh* busMesh = director->loadMesh(argv[1], argv[2]);
 
     busNode = director->addMeshSceneNode(0, "Bus", busMesh);
-	busNode->setXRotation(-90.0f);
+	//busNode->setRotation(vec3(-90.0f,0,0));
 
-	busNode->setPosition(vec3(0,0,0));
+	vbTransform transf;
+	transf.setRotation(vec3(-90.0f, 0, 0));
+	busNode->setTransform(transf);
+	
 
+	//node1 = director->addMeshSceneNode(busNode, "Node1", busMesh);
+
+	//transf.setRotation(vec3(-90.0f, 0, 0));
+	//transf.setPosition(vec3(-4.0f, 3.0f, -5.0f));
+	//node1->setTransform(transf);
 
 	// Setting game state to RUN
 	EGameState = EGS_RUN;

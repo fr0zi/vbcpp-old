@@ -10,8 +10,8 @@
 class CTerrainNode : CNode
 {
     public:
-        CTerrainNode(CNode* parent = 0, vbcString heightmap, vbcString name = "Terrain");
-        void ~CTerrainNode();
+        CTerrainNode(CNode* parent = 0, vbcString heightmap = "", vbcString name = "Terrain");
+        virtual ~CTerrainNode();
 
     private:
         void generateTerrainMesh(vbcString filename);

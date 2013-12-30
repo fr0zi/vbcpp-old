@@ -35,6 +35,17 @@ GLfloat	CStaticCamera::getFarValue()
 }
 
 
+glm::vec3 CStaticCamera::getLookAtVector()
+{
+	return m_LookAt;
+}
+
+glm::vec3 CStaticCamera::getUpVector()
+{
+	return m_UpVector;
+}
+
+
 glm::mat4 CStaticCamera::getProjectionMatrix()
 {
 	return m_ProjectionMatrix;

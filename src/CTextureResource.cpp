@@ -3,7 +3,9 @@
 CTextureResource::CTextureResource(vbcString filename)
 : CResource(filename)
 {
+	#ifdef DEBUG_MODE
 	printf("Creating texture resource: %s\n", m_Filename.c_str());
+	#endif
 
 	loadResource();
 }
@@ -11,7 +13,9 @@ CTextureResource::CTextureResource(vbcString filename)
 
 CTextureResource::~CTextureResource()
 {
+	#ifdef DEBUG_MODE
 	printf("Destroying texture resource: %s\n", m_Filename.c_str());
+	#endif
 
 	glDeleteTextures(1, &m_ID);
 }
@@ -25,7 +29,9 @@ void CTextureResource::loadResource()
 
 	if ( fileExtension == "bmp" )
 	{
+		#ifdef DEBUG_MODE
 		printf("Texture format is BMP\n");
+		#endif
 
 		m_ID = loadTextureBMP(m_Filename);
 
@@ -33,7 +39,9 @@ void CTextureResource::loadResource()
 	}
 	else if ( fileExtension == "tga" )
 	{
+		#ifdef DEBUG_MODE
 		printf("Texture format is TGA\n");
+		#endif
 
 		m_ID = loadTextureTGA(m_Filename);
 
@@ -41,7 +49,9 @@ void CTextureResource::loadResource()
 	}
 	else if ( fileExtension == "dds" )
 	{
+		#ifdef DEBUG_MODE
 		printf("Texture format is DDS\n");
+		#endif
 
 		m_ID = loadTextureDDS(m_Filename);
 

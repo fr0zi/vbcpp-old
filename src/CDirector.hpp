@@ -7,8 +7,8 @@
 #include "CNode.hpp"
 #include "CLoader3ds.hpp"
 #include "CVisioner.hpp"
-#include "CVideoNode.hpp"
-
+#include "CMeshNode.hpp"
+#include "vbTransform.hpp"
 
 typedef std::list<CNode*>	NodeList;
 
@@ -18,7 +18,9 @@ class CDirector : virtual public CNode
 	public:
 		CDirector(vbcString name = "Director")
 		{
+			#ifdef DEBUG_MODE
             printf("Creating Scene Manager\n");
+			#endif
 
 			m_Visioner = new CVisioner;
 			m_Warehouser = new CWarehouser;
@@ -27,26 +29,34 @@ class CDirector : virtual public CNode
 
 		virtual ~CDirector()
 		{
+			#ifdef DEBUG_MODE
             printf("Destroying Scene Manager\n");
+			#endif
 			
 			m_Visioner->drop();
 			m_Warehouser->drop();
-
 		}
 
 
-		CVideoNode* addMeshSceneNode(CNode* parent = 0, vbcString name = "", CMesh* mesh = 0,
-			vec3 position = vec3(0,0,0), float rotationAngle = 0.0f, vec3 rotationVector = vec3(0,1,0), vec3 scale = vec3(1,1,1))
+		CMeshNode* addMeshSceneNode(CNode* parent = 0, vbcString name = "", CMesh* mesh = 0,
+			vec3 position = vec3(0,0,0), vec3 rotation = vec3(0,0,0), vec3 scale = vec3(1,1,1))
 		{
-			CVideoNode* node;
+			CMeshNode* node;
 
             if (parent != 0)
-                node = new CVideoNode(parent, name);
+                node = new CMeshNode(parent, name);
             else
-                node = new CVideoNode(this, name);
+                node = new CMeshNode(this, name);
 
 			node->setMesh(mesh);
 			node->setShaderID(m_Warehouser->loadShader("bus.shader"));
+
+			vbTransform transform;
+			transform.setPosition(position);
+			transform.setRotation(rotation);
+			transform.setScale(scale);
+
+			node->setTransform(transform);
 
 			m_Visioner->registerNodeForRender(node);
 

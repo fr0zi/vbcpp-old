@@ -33,9 +33,11 @@ void CCameraFPS::update(int mousePosX, int mousePosY)
 
 	m_UpVector = vec3( glm::cross(m_RightVector, m_Direction) );
 
+	m_LookAt = m_Position + m_Direction;
+
 	m_ViewMatrix = glm::lookAt(
 						m_Position,
-						m_Position + m_Direction,
+						m_LookAt,
 						m_UpVector );
 }
 

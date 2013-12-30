@@ -1,6 +1,7 @@
 #ifndef __CTEXTURERESOURCE_HPP__
 #define __CTEXTURERESOURCE_HPP__
 
+#include "Includes.hpp"
 #include "CResource.hpp"
 #include "TextureLoaders.hpp"
 

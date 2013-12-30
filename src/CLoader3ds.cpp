@@ -58,20 +58,20 @@ CMesh* CLoader3ds::getMesh(vbcString filename, vbcString texPath)
 		// quantity of vertices
 		unsigned int verticesCount = 0;
 
-		// is mesh buffer valid - it is set to TRUE if any vertex data has been loaded from file into memory
-		bool isValid = false;
-
 		// Loading vertex data from file
-		S3DVertex* vertices = loadGeometryByMaterial(mat, verticesCount, isValid );
+        S3DVertex* vertices = loadGeometryByMaterial(mat, verticesCount /*, isValid */ );
 
-		// Send pointer of vertex data to mesh buffer
-		mb->setVerticesData( vertices, verticesCount, isValid );
+		if (verticesCount > 0)
+		{
+			// Send pointer of vertex data to mesh buffer
+			mb->setVertexData( vertices, verticesCount );
 
-		// Creating Vertex Buffer Object
-		mb->createVBO();
+			// Creating Vertex Buffer Object
+			mb->createVBO();
 
-		// Add mesh buffer to mesh
-		mesh->addMeshBuffer(mb);
+			// Add mesh buffer to mesh
+			mesh->addMeshBuffer(mb);
+		}
 	}
 
 	// Return loaded mesh
@@ -126,7 +126,9 @@ SMaterial CLoader3ds::loadMaterialData(Lib3dsMaterial* material, vbcString texPa
 	{
 		texId = m_Warehouser->loadTexture(texturePath.c_str());
 
+		#ifdef DEBUG_MODE
 		printf("Texture ID: %d\n", texId);
+		#endif
 
 		sMaterial.textureId = texId;
 	}
@@ -135,13 +137,12 @@ SMaterial CLoader3ds::loadMaterialData(Lib3dsMaterial* material, vbcString texPa
 }
 
 
-S3DVertex* CLoader3ds::loadGeometryByMaterial(SMaterial& material, unsigned int& quantumOfVertices, bool& isValid)
+S3DVertex* CLoader3ds::loadGeometryByMaterial(SMaterial& material, unsigned int& quantumOfVertices )
 {
 	Lib3dsMesh* mesh;
 	Lib3dsFace* face;
 
-
-	unsigned int validFaces = 0;
+    GLuint validFaces = 0;
 
 	for(mesh = m_File3ds->meshes; mesh != NULL; mesh = mesh->next)
 	{
@@ -156,87 +157,80 @@ S3DVertex* CLoader3ds::loadGeometryByMaterial(SMaterial& material, unsigned int&
 			}
 		}
 
-	// If mesh contains any vertices with given material - we will set Mesh Buffer as valid (it contains data)
-	isValid = (bool)(validFaces);
+	// if there's no faces with given material - return 0
+	if (!validFaces) return 0;
+
 
 	// Each face (triangle) has 3 vertices, so total quantity of vertices is number of faces * 3
 	quantumOfVertices = validFaces * 3;
 
 	S3DVertex* vertices = 0;
+	vertices = new S3DVertex[quantumOfVertices];
 
-	// If mesh with has any vertices with given material, we load them
-	if(isValid)
+	GLfloat u, v;
+
+	unsigned int faceWithCurrentMaterial = 0;
+
+	// Loop through all meshes in the file
+	for(mesh = m_File3ds->meshes; mesh != NULL; mesh = mesh->next)
 	{
-		vertices = new S3DVertex[quantumOfVertices];
+		unsigned int totalFacesInMesh = mesh->faces;
 
-		GLfloat u, v;
+		Lib3dsVector* tmpNormals = new Lib3dsVector[totalFacesInMesh * 3];
 
-		unsigned int faceWithCurrentMaterial = 0;
+		// For each mesh we calculate normals with Lib3ds function
+		lib3ds_mesh_calculate_normals(mesh, &tmpNormals[0]);
 
-		// Loop through all meshes in the file
-		for(mesh = m_File3ds->meshes; mesh != NULL; mesh = mesh->next)
+		// In each mesh we loop through all faces to find these with given material
+		for(unsigned int currentFace = 0; currentFace < mesh->faces; currentFace++)
 		{
-			unsigned int totalFacesInMesh = mesh->faces;
+			// Load face data
+			face = &mesh->faceL[currentFace];
 
+			vbcString faceMaterial = vbcString(face->material);
 
-			Lib3dsVector* tmpNormals = new Lib3dsVector[totalFacesInMesh * 3];
-
-			// For each mesh we calculate normals with Lib3ds function
-			lib3ds_mesh_calculate_normals(mesh, &tmpNormals[0]);
-
-			// In each mesh we loop through all faces to find these with given material
-			for(unsigned int currentFace = 0; currentFace < mesh->faces; currentFace++)
+			// If face has the same material name as given as parameter, we load vertices data
+			if(faceMaterial == material.name)
 			{
-				// Load face data
-				face = &mesh->faceL[currentFace];
-
-				vbcString faceMaterial = vbcString(face->material);
-
-				// If face has the same material name as given as parameter, we load vertices data
-				if(faceMaterial == material.name)
+				for(int currentVertex = 0; currentVertex < 3; currentVertex++)
 				{
-					for(int currentVertex = 0; currentVertex < 3; currentVertex++)
+					// Copy vertex position data from file into S3DVertex structure inside the array
+					memcpy(&vertices[faceWithCurrentMaterial * 3 + currentVertex].coord, mesh->pointL[face->points[currentVertex]].pos, sizeof(float[3]));
+
+					// The same as above, but with normals: loading from already precalculated array into S3DVertex structure in array
+					memcpy(&vertices[faceWithCurrentMaterial * 3 + currentVertex].normal, tmpNormals[currentFace * 3 + currentVertex] , sizeof(float[3]));
+
+					// If mesh has any data about texture coordinations, we load them
+					if(mesh->texels)
 					{
-						// Copy vertex position data from file into S3DVertex structure inside the array
-						memcpy(&vertices[faceWithCurrentMaterial * 3 + currentVertex].coord, mesh->pointL[face->points[currentVertex]].pos, sizeof(float[3]));
+						// texture coordination data
+						u = mesh->texelL[face->points[currentVertex]][0];
+						v = mesh->texelL[face->points[currentVertex]][1];
 
-						// The same as above, but with normals: loading from already precalculated array into S3DVertex structure in array
-						memcpy(&vertices[faceWithCurrentMaterial * 3 + currentVertex].normal, tmpNormals[currentFace * 3 + currentVertex] , sizeof(float[3]));
+						// offset of the texture
+						u += material.offset[0];
+						v += material.offset[1];
 
-						// If mesh has any data about texture coordinations, we load them
-						if(mesh->texels)
-						{
-							// texture coordination data
-							u = mesh->texelL[face->points[currentVertex]][0];
-							v = mesh->texelL[face->points[currentVertex]][1];
+						// scale of the texture
+						u *= material.scale[0];
+						v *= material.scale[1];
 
-							// offset of the texture
-							u += material.offset[0];
-							v += material.offset[1];
+						// Calculated values we store in S3DVertex structure
+						vertices[faceWithCurrentMaterial * 3 + currentVertex].texcoord[0] = u;
+						vertices[faceWithCurrentMaterial * 3 + currentVertex].texcoord[1] = v;
 
-							// scale of the texture
-							u *= material.scale[0];
-							v *= material.scale[1];
+					} // if (texels)
 
-							// Calculated values we store in S3DVertex structure
-							vertices[faceWithCurrentMaterial * 3 + currentVertex].texcoord[0] = u;
-							vertices[faceWithCurrentMaterial * 3 + currentVertex].texcoord[1] = v;
+				} // for
 
-						} // if (texels)
+				faceWithCurrentMaterial++;
+			} // if
 
-					} // for
+	    } // for
 
-					faceWithCurrentMaterial++;
-				} // if
-
-		    } // for
-
-			delete[] tmpNormals;
-
-		}
-
+        delete[] tmpNormals;
 	}
 
-	return vertices;
+    return vertices;
 }
 

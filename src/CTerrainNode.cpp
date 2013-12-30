@@ -20,7 +20,7 @@ void CTerrainNode::generateTerrainMesh(vbcString filename)
 
     imageData = loadBMP(filename.c_str());
 
-    		const float CellSize = 1.0f;
+        const float CellSize = 1.0f;
 		const float MaxHeight = 20.0f;
 		glm::vec3 Position(0.0f, 0.0f, 0);
 
@@ -29,8 +29,8 @@ void CTerrainNode::generateTerrainMesh(vbcString filename)
 		std::vector<glm::vec2> Coords;
 		std::vector<glm::vec3> Normals;
 
-		
-		
+
+
 		int a = 10;
 
 		for (int z = 0; z < height; ++z)
@@ -54,7 +54,7 @@ void CTerrainNode::generateTerrainMesh(vbcString filename)
 
 			Position.z += CellSize;
 		}
-		
+
 
 		std::vector<unsigned int> Indices;
 

@@ -1,6 +1,6 @@
-CC = g++ -std=c++0x
+CC = g++ 
 INCPATH = include
-SRC = main.cpp CStaticCamera.cpp CCameraFPS.cpp CMesh.cpp CVisioner.cpp CWarehouser.cpp CResource.cpp CShaderResource.cpp CTextureResource.cpp TextureLoaders.cpp CMeshBuffer.cpp CLoader3ds.cpp CVideoNode.cpp CNode.cpp
+SRC = main.cpp CStaticCamera.cpp CCameraFPS.cpp CMesh.cpp CVisioner.cpp CWarehouser.cpp CResource.cpp CShaderResource.cpp CTextureResource.cpp LoaderBMP.cpp TextureLoaders.cpp CMeshBuffer.cpp CLoader3ds.cpp CMeshNode.cpp CNode.cpp vbTransform.cpp
 OBJS = $(patsubst %.cpp, %.o, ${SRC})
 LIBS = -L/usr/lib -lXrandr -lGL -lGLU -lrt -lXxf86vm -lXi
 MYLIBS = -Llibs/linux -lglfw3 -lGLEW -l3ds

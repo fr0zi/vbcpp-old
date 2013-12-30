@@ -30,18 +30,15 @@ public:
 
 	SMaterial& getMaterial();
 
-	bool isValid();
-
 	void setMaterial(SMaterial& material);
 
+	void setVertexData(S3DVertex* vertices, unsigned int quantumOfVertices /*, bool isValid */);
 
-	void setVerticesData(S3DVertex* vertices, unsigned int quantumOfVertices, bool isValid);
 
 private:
 	S3DVertex*	m_Vertices;
 
 	SMaterial m_Material;
-	bool m_IsValid;
 	unsigned int m_QuantumOfVertices;
 	GLuint m_VertexBufferID;
 };

@@ -1,6 +1,8 @@
 # DIRECTORIES
 
 # FILES
+*.layout
+*.depend
 game/buses/*
 game/scenery/*
 Doxyfile

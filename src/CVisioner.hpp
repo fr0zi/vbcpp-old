@@ -4,7 +4,7 @@
 #include "Includes.hpp"
 #include "CReferenceCounter.hpp"
 #include "CStaticCamera.hpp"
-#include "CVideoNode.hpp"
+#include "CMeshNode.hpp"
 
 #include <list>
 
@@ -29,7 +29,7 @@ class CVisioner : virtual public CReferenceCounter
         void renderNodes(CStaticCamera* cam);
 
 		//! Register node for rendering process
-        void registerNodeForRender(CVideoNode* node);
+        void registerNodeForRender(CMeshNode* node);
 
 
 	protected:
@@ -49,7 +49,7 @@ class CVisioner : virtual public CReferenceCounter
 		GLuint		m_CurrentShaderID;
 
 		//! Render list
-		std::list<CVideoNode*>   m_RenderList;
+		std::list<CMeshNode*>   m_RenderList;
 };
 
 #endif //__CVISIONER_HPP__

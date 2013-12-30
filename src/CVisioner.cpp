@@ -35,7 +35,7 @@ void CVisioner::setShaderID(GLuint id)
 }
 
 
-void CVisioner::registerNodeForRender(CVideoNode* node)
+void CVisioner::registerNodeForRender(CMeshNode* node)
 {
     m_RenderList.push_back(node);
 }
@@ -43,20 +43,30 @@ void CVisioner::registerNodeForRender(CVideoNode* node)
 
 void CVisioner::renderNodes(CStaticCamera* cam)
 {
-    std::list<CVideoNode*>::iterator it = m_RenderList.begin();
+    std::list<CMeshNode*>::iterator it = m_RenderList.begin();
+
+	mat4 modelMatrix;
+	mat4 MVP;
+	GLuint MVPID, shaderId;
+
 
 	// Solid pass
     for (; it != m_RenderList.end(); ++it)
     {
 		if ( (*it)->getIsActive() == true )
 		{
-			GLuint shaderId =  (*it)->getShaderID();
+			shaderId =  (*it)->getShaderID();
 
-			glm::mat4 MVP = cam->getProjectionMatrix() * cam->getViewMatrix() * (*it)->getAbsoluteTransformation();
+			if ( (*it)->hasParent() )
+				modelMatrix = (*it)->getTransform().getAbsoluteTransform() * (*it)->getParent()->getTransform().getAbsoluteTransform();
+			else
+				modelMatrix = (*it)->getTransform().getAbsoluteTransform();
+
+			MVP = cam->getProjectionMatrix() * cam->getViewMatrix() * modelMatrix;
 
 			GLuint MVPID = glGetUniformLocation(shaderId, "MVP");
 
-			glUseProgram((*it)->getShaderID());
+			glUseProgram(shaderId);
 
 			glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
 					
@@ -69,13 +79,18 @@ void CVisioner::renderNodes(CStaticCamera* cam)
     {
 		if ( (*it)->getIsActive() == true )
 		{
-			GLuint shaderId =  (*it)->getShaderID();
+			shaderId =  (*it)->getShaderID();
 
-			glm::mat4 MVP = cam->getProjectionMatrix() * cam->getViewMatrix() * (*it)->getAbsoluteTransformation();
+			if ( (*it)->hasParent() )
+				modelMatrix = (*it)->getTransform().getAbsoluteTransform() * (*it)->getParent()->getTransform().getAbsoluteTransform();
+			else
+				modelMatrix = (*it)->getTransform().getAbsoluteTransform();
+
+			MVP = cam->getProjectionMatrix() * cam->getViewMatrix() * modelMatrix;
 
 			GLuint MVPID = glGetUniformLocation(shaderId, "MVP");
 
-			glUseProgram((*it)->getShaderID());
+			glUseProgram(shaderId);
 
 			glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
 					

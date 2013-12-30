@@ -5,6 +5,7 @@
 #include "CReferenceCounter.hpp"
 #include "CTextureResource.hpp"
 #include "CShaderResource.hpp"
+#include "LoaderBMP.hpp"
 
 #include <list>
 #include <cstring>
