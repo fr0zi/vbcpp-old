@@ -55,13 +55,15 @@
 				<Linker>
 					<Add library="GL" />
 					<Add library="GLU" />
+					<Add library="GLEW" />
+					<Add library="glfw3" />
 					<Add library="Xrandr" />
 					<Add library="rt" />
 					<Add library="Xxf86vm" />
 					<Add library="Xi" />
-					<Add library="GLEW" />
-					<Add library="glfw3" />
 					<Add library="3ds" />
+					<Add library="pthread" />
+					<Add library="X11" />
 					<Add directory="libs/linux" />
 				</Linker>
 			</Target>
@@ -129,8 +131,11 @@
 		<Unit filename="src/TextureLoaders.cpp" />
 		<Unit filename="src/TextureLoaders.hpp" />
 		<Unit filename="src/main.cpp" />
+		<Unit filename="src/vbLoaderDDS.cpp" />
+		<Unit filename="src/vbLoaderDDS.hpp" />
 		<Unit filename="src/vbTransform.cpp" />
 		<Unit filename="src/vbTransform.hpp" />
+		<Unit filename="src/vbWarehouser.hpp" />
 		<Extensions>
 			<DoxyBlocks>
 				<comment_style block="3" line="3" />

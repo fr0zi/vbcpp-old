@@ -65,7 +65,7 @@ GLuint CShaderResource::LoadVertexShader(const char* shader_file)
 	if( VertexShaderStream.is_open() )
 	{
 		std::string Line = "";
-		
+
 		while( getline(VertexShaderStream, Line) )
 		{
 			if( Line == "VERTEX_SHADER" )
@@ -83,7 +83,7 @@ GLuint CShaderResource::LoadVertexShader(const char* shader_file)
 				shaderCode = false;
 				continue;
 			}
-					
+
 			if( shaderCode )
 			{
 				VertexShaderCode += "\n" + Line;
@@ -134,7 +134,7 @@ GLuint CShaderResource::LoadFragmentShader(const char* shader_file)
 	if( FragmentShaderStream.is_open() )
 	{
 		std::string Line = "";
-		
+
 		while( getline(FragmentShaderStream, Line) )
 		{
 			if( Line == "FRAGMENT_SHADER" )
@@ -152,7 +152,7 @@ GLuint CShaderResource::LoadFragmentShader(const char* shader_file)
 				shaderCode = false;
 				continue;
 			}
-					
+
 			if( shaderCode )
 			{
 				FragmentShaderCode += "\n" + Line;

@@ -4,7 +4,6 @@
 #include "CResource.hpp"
 
 #include <stdio.h>
-#include <string>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -12,9 +11,7 @@
 using namespace std;
 
 #include <stdlib.h>
-#include <string.h>
 
-#include <glew/glew.h>
 
 
 class CShaderResource : virtual public CResource
@@ -28,9 +25,5 @@ class CShaderResource : virtual public CResource
 		GLuint LoadVertexShader(const char* shader_file);
 		GLuint LoadFragmentShader(const char* shader_file);
 };
-
-GLuint LoadShader(const char* shaderFilename);
-
-
 
 #endif // CSHADERRESOURCE_HPP

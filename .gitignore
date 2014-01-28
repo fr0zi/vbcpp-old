@@ -5,6 +5,7 @@
 *.depend
 game/buses/*
 game/scenery/*
+tmp/*
 Doxyfile
 
 # EXECUTABLES
