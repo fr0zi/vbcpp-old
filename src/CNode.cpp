@@ -9,7 +9,7 @@ CNode::CNode(CNode* parent, vbcString name)
 
 	/* This line was couse of error - Segmentation Fault
 		when it was inside 'if( parent != 0 )'
-		When I moved it here - everything start working well :)
+		When I moved it here - everything started to work well :)
 	*/
 	m_Parent = parent;
 
@@ -22,7 +22,7 @@ CNode::CNode(CNode* parent, vbcString name)
 }
 
 
-        
+
 CNode::~CNode()
 {
 	#ifdef DEBUG_MODE

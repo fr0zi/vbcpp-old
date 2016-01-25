@@ -49,7 +49,7 @@ GLuint CWarehouser::loadTexture(vbcString filename)
 	#ifdef DEBUG_MODE
 	printf("Texture resource doesn't exist. Creating new resource [%d].\n", resource->getID());
 	#endif
-	
+
 	return resource->getID();
 }
 
@@ -70,7 +70,7 @@ GLuint CWarehouser::loadShader(vbcString filename)
 		}
 	}
 
-	
+
 
 	CShaderResource* resource = new CShaderResource(filename);
 	//m_CurrentResourceID++;

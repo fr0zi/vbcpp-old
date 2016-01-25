@@ -1,26 +1,21 @@
-#include <glew/glew.h>
-#include <glfw/glfw3.h>
+//#include <glew/glew.h>
+//#include <glfw/glfw3.h>
 
 #include <string>
 #include <sstream>
 #include <iostream>
 
 #include "Includes.hpp"
-#include "CDirector.hpp"
-#include "CWarehouser.hpp"
-#include "CVisioner.hpp"
-#include "CStaticCamera.hpp"
 #include "CCameraFPS.hpp"
+#include "CRoad.hpp"
+#include "CDirector.hpp"
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
 const float ROT_SPEED = 20.0f;
 
-
-CDirector* director = 0;
-CNode* busNode = 0;
-CNode* node1 = 0;
 CCameraFPS* camFPS = 0;
+CDirector*  director = 0;
 
 enum _EGameState {
 	EGS_RUN,
@@ -47,8 +42,8 @@ static void keyboard_callback(GLFWwindow* window, int key, int scancode, int act
 
 		//busNode->setIsActive(!state);
 
-        if (node1)
-            node1->setParent(busNode);
+        //if (node1)
+        //    node1->setParent(busNode);
 	}
 
 	if (key == GLFW_KEY_2 && action == GLFW_PRESS )
@@ -57,14 +52,14 @@ static void keyboard_callback(GLFWwindow* window, int key, int scancode, int act
 
 		//node1->setIsActive(!state);
 
-        if (node1)
-		    node1->setParent(director);
+        //if (node1)
+		//    node1->setParent(director);
 	}
 }
 
 
 void readInput(GLFWwindow* window, double deltaTime)
-{	
+{
 	if (glfwGetKey( window, GLFW_KEY_W ) == GLFW_PRESS)
 	{
 		camFPS->moveForward(deltaTime);
@@ -82,7 +77,7 @@ void readInput(GLFWwindow* window, double deltaTime)
 
 	if (glfwGetKey( window, GLFW_KEY_A ) == GLFW_PRESS)
 	{
-		camFPS->strafeLeft(deltaTime);	
+		camFPS->strafeLeft(deltaTime);
 	}
 }
 
@@ -114,7 +109,7 @@ GLFWwindow* createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yP
 	glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
 	window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
-	
+
 	if (!window)
 	{
 		glfwTerminate();
@@ -147,7 +142,7 @@ GLFWwindow* createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yP
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_LIGHTING);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	glEnable(GL_DEPTH_TEST);
 	//glDepthFunc(GL_LEQUAL);
@@ -161,13 +156,13 @@ GLFWwindow* createWindow(GLuint width, GLuint height, GLuint xPos = 0, GLuint yP
 
 int main(int argc, char* argv[])
 {
-    
+/*
 	if(argc < 3)
 	{
 		printf("You must specify model name and texture path as parameter.\n");
 		return 1;
 	}
-	
+*/
 
 	// Creating OpenGL window
 	GLFWwindow* win	= createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, 100, 100);
@@ -194,15 +189,15 @@ int main(int argc, char* argv[])
 	director = new CDirector("Director");
 
 	// Scene nodes
-	CMesh* busMesh = director->loadMesh(argv[1], argv[2]);
+	//CMesh* busMesh = director->loadMesh(argv[1], argv[2]);
 
-    busNode = director->addMeshSceneNode(0, "Bus", busMesh);
+    //busNode = director->addMeshSceneNode(0, "Bus", busMesh);
 	//busNode->setRotation(vec3(-90.0f,0,0));
 
-	vbTransform transf;
-	transf.setRotation(vec3(-90.0f, 0, 0));
-	busNode->setTransform(transf);
-	
+	//vbTransform transf;
+	//transf.setRotation(vec3(-90.0f, 0, 0));
+	//busNode->setTransform(transf);
+
 
 	//node1 = director->addMeshSceneNode(busNode, "Node1", busMesh);
 
@@ -210,11 +205,14 @@ int main(int argc, char* argv[])
 	//transf.setPosition(vec3(-4.0f, 3.0f, -5.0f));
 	//node1->setTransform(transf);
 
+    CRoad* road = new CRoad(10.0f, glm::vec3(0,0,0), 0.0f, 1.0f);
+
+
 	// Setting game state to RUN
 	EGameState = EGS_RUN;
 
 	double lastTime;
-	double oldTime; 
+	double oldTime;
 	lastTime = oldTime = glfwGetTime();
  	int nbFrames = 0;
 
@@ -223,7 +221,7 @@ int main(int argc, char* argv[])
 	{
 		// Measure speed
 		double currentTime = glfwGetTime();
-		
+
 		nbFrames++;
 
 		// Compute delta time to animation
@@ -235,7 +233,7 @@ int main(int argc, char* argv[])
 
 		glfwGetCursorPos(win, &xpos, &ypos);
 
-		glfwSetCursorPos( win, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);		
+		glfwSetCursorPos( win, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
 
 		camFPS->update(xpos, ypos);
 
@@ -264,11 +262,16 @@ int main(int argc, char* argv[])
 		glClearColor(0.7, 0.7, 0.9, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			director->getVisioner()->renderNodes(camFPS);
+			//director->getVisioner()->renderNodes(camFPS);
+			road->render();
 
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 	}
+
+    road->drop();
+
+    //delete road;
 
 	// Dropping Scene Manager
 	director->drop();

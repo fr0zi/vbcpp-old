@@ -10,7 +10,7 @@ struct S3DVertex
 	//! CONSTRUCTOR
 	S3DVertex()
 	{
-	
+
 	}
 
 	//! DESTRUCTOR

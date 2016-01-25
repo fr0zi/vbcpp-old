@@ -6,33 +6,33 @@
 
 //! \brief Reference Counter class
 /*!
-	It counts references that other objects hold to specific object. 
+	It counts references that other objects hold to specific object.
 	This is used to automatic object deletion if it's no longer needed.
 	Every new object derived from this class has reference counter equals to 1 in moment of creation.
 	If reference counter reach 0, object is deleted from memory.
 */
-class CReferenceCounter
+class CRefCounter
 {
 	public:
 		//! CONSTRUCTOR
-		CReferenceCounter() : _refCounter(1)
+		CRefCounter() : _refCounter(1)
 		{
 		    #ifdef DEBUG_MODE
-               fprintf(stdout, "Creating Reference Counted object\n");
+               fprintf(stdout, "Creating Reference Counter\n");
             #endif
 		}
 
 		//! DESTRUCTOR
-		virtual ~CReferenceCounter()
+		virtual ~CRefCounter()
 		{
 		    #ifdef DEBUG_MODE
-               fprintf(stdout, "Destroying Reference Counted object\n");
+               fprintf(stdout, "Destroying Reference Counter\n");
             #endif
 		}
 
 		//! Grab a pointer
 		/*!
-			Increases object's internal reference counter. 
+			Increases object's internal reference counter.
 		*/
 		void grab() const
 		{

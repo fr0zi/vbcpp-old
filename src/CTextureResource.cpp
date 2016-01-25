@@ -1,5 +1,7 @@
 #include "CTextureResource.hpp"
 
+#include <SOIL.h>
+
 CTextureResource::CTextureResource(vbcString filename)
 : CResource(filename)
 {
@@ -23,6 +25,7 @@ CTextureResource::~CTextureResource()
 
 void CTextureResource::loadResource()
 {
+    /*
 	unsigned dotPos = m_Filename.rfind(".");
 
 	vbcString fileExtension = m_Filename.substr(dotPos+1);
@@ -57,7 +60,22 @@ void CTextureResource::loadResource()
 
 		return;
 	}
+	*/
 
-	m_ID = 0;
+    m_ID = SOIL_load_OGL_texture
+	(
+		m_Filename.c_str(),
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+
+if( 0 == m_ID )
+{
+	printf( "SOIL loading error: '%s'\n", SOIL_last_result() );
+}
+
+
+	//m_ID = 0;
 }
 

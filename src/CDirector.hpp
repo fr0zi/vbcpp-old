@@ -32,7 +32,7 @@ class CDirector : virtual public CNode
 			#ifdef DEBUG_MODE
             printf("Destroying Scene Manager\n");
 			#endif
-			
+
 			m_Visioner->drop();
 			m_Warehouser->drop();
 		}
@@ -49,7 +49,7 @@ class CDirector : virtual public CNode
                 node = new CMeshNode(this, name);
 
 			node->setMesh(mesh);
-			node->setShaderID(m_Warehouser->loadShader("bus.shader"));
+			node->setShaderID(m_Warehouser->loadShader("bus.shdr"));
 
 			vbTransform transform;
 			transform.setPosition(position);
@@ -78,7 +78,7 @@ class CDirector : virtual public CNode
 			return mesh;
 		}
 
-		
+
 		CVisioner* getVisioner()
 		{
 			return m_Visioner;

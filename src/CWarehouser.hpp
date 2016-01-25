@@ -1,8 +1,10 @@
 #ifndef __CWAREHOUSER_HPP__
 #define __CWAREHOUSER_HPP__
 
+
+
 #include "Includes.hpp"
-#include "CReferenceCounter.hpp"
+#include "CRefCounter.hpp"
 #include "CTextureResource.hpp"
 #include "CShaderResource.hpp"
 #include "LoaderBMP.hpp"
@@ -12,7 +14,7 @@
 
 typedef std::list<CResource*>	ResourceList;
 
-class CWarehouser : virtual public CReferenceCounter
+class CWarehouser : virtual public CRefCounter
 {
 	public:
 		CWarehouser(vbcString name = "Warehouser");

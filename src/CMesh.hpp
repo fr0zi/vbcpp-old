@@ -7,14 +7,14 @@
 #include <lib3ds/file.h>
 #include <lib3ds/material.h>
 
-#include "CReferenceCounter.hpp"
+#include "CRefCounter.hpp"
 #include "CMeshBuffer.hpp"
 
 
 typedef std::vector<CMeshBuffer*> MeshBufferList;
 
 
-class CMesh : virtual public CReferenceCounter
+class CMesh : virtual public CRefCounter
 {
 	public:
 
@@ -27,7 +27,7 @@ class CMesh : virtual public CReferenceCounter
 		CMeshBuffer* getMeshBuffer(unsigned int i);
 
 		void setQuantumOfMeshBuffers(unsigned long quantum);
-  
+
 		unsigned int getQuantumOfMeshBuffers();
 
 

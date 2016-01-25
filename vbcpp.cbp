@@ -64,6 +64,7 @@
 					<Add library="3ds" />
 					<Add library="pthread" />
 					<Add library="X11" />
+					<Add library="SOIL" />
 					<Add directory="libs/linux" />
 				</Linker>
 			</Target>
@@ -110,9 +111,11 @@
 		<Unit filename="src/CMeshNode.hpp" />
 		<Unit filename="src/CNode.cpp" />
 		<Unit filename="src/CNode.hpp" />
-		<Unit filename="src/CReferenceCounter.hpp" />
+		<Unit filename="src/CRefCounter.hpp" />
 		<Unit filename="src/CResource.cpp" />
 		<Unit filename="src/CResource.hpp" />
+		<Unit filename="src/CRoad.cpp" />
+		<Unit filename="src/CRoad.hpp" />
 		<Unit filename="src/CShaderResource.cpp" />
 		<Unit filename="src/CShaderResource.hpp" />
 		<Unit filename="src/CStaticCamera.cpp" />

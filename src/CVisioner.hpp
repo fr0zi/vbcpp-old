@@ -2,7 +2,7 @@
 #define __CVISIONER_HPP__
 
 #include "Includes.hpp"
-#include "CReferenceCounter.hpp"
+#include "CRefCounter.hpp"
 #include "CStaticCamera.hpp"
 #include "CMeshNode.hpp"
 
@@ -10,7 +10,7 @@
 
 
 
-class CVisioner : virtual public CReferenceCounter
+class CVisioner : virtual public CRefCounter
 {
 	public:
 		CVisioner(vbcString name = "Visioner");

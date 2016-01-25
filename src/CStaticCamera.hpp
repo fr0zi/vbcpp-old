@@ -2,12 +2,12 @@
 #define __CSTATICCAMERA_HPP__
 
 #include "Includes.hpp"
-#include "CReferenceCounter.hpp"
+#include "CRefCounter.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-class CStaticCamera : virtual public CReferenceCounter
+class CStaticCamera : virtual public CRefCounter
 {
 	public:
 		CStaticCamera(int width = 800, int height = 600, GLfloat viewAngle = 45.0f, GLfloat nearValue = 0.1f, GLfloat farValue = 1000.0f);
@@ -29,7 +29,7 @@ class CStaticCamera : virtual public CReferenceCounter
 		glm::mat4 getViewMatrix();
 
 		void setPosition(vec3 position);
-		
+
 		void setPosition(GLfloat x, GLfloat y, GLfloat z);
 
 		void lookAt(vec3 lookAt);

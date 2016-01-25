@@ -3,7 +3,7 @@
 
 
 #include "Includes.hpp"
-#include "CReferenceCounter.hpp"
+#include "CRefCounter.hpp"
 #include "vbTransform.hpp"
 
 #include <string>
@@ -14,7 +14,7 @@
 /*!
 	Node represents single element on the scene.
  */
-class CNode : virtual public CReferenceCounter
+class CNode : virtual public CRefCounter
 {
     public:
 
@@ -39,8 +39,8 @@ class CNode : virtual public CReferenceCounter
 
 		//! Remove node from parent node
 		/*!
-			This removes node from parent's children list. If node is not attached to any other node nor the Director - it will be removed from memory 
-			due to reference counting. 
+			This removes node from parent's children list. If node is not attached to any other node nor the Director - it will be removed from memory
+			due to reference counting.
 		*/
         virtual void remove();
 
